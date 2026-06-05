@@ -2608,10 +2608,10 @@ function escHtml(str) {
 }
 
 function showTab(id) {
-  document.querySelectorAll('.dash-nav-btn').forEach((b,i)=>{
-    const ids=['scan','ai','log','watchlist','routine','rules'];
-    b.classList.toggle('active', ids[i]===id);
-    if(ids[i]==='scan') b.style.borderBottomColor = ids[i]===id ? '#00d4aa' : 'transparent';
+  document.querySelectorAll('#nav .dash-nav-btn').forEach(b=>{
+    const tid = b.getAttribute('onclick').match(/'(\w+)'/)[1];
+    b.classList.toggle('active', tid===id);
+    b.style.borderBottomColor = (tid===id && tid==='scan') ? '#00d4aa' : '';
   });
   const aiTab = document.getElementById('ai-tab');
   const scanTab = document.getElementById('scan-tab');
