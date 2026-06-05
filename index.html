@@ -696,15 +696,87 @@ canvas.chart{display:block;width:100%;height:auto;}
 </div>
 
 <div id="nav">
-  <button class="dash-nav-btn active" onclick="showTab('ai')">🤖 AI Assistant</button>
-  <button class="dash-nav-btn" onclick="showTab('log')">📋 Trade Log</button>
-  <button class="dash-nav-btn" onclick="showTab('watchlist')">👀 Watchlist</button>
+  <button class="dash-nav-btn active" onclick="showTab('scan')" style="color:#00d4aa;border-bottom-color:#00d4aa;">✅ Scan Check</button>
+  <button class="dash-nav-btn" onclick="showTab('ai')">🤖 AI</button>
+  <button class="dash-nav-btn" onclick="showTab('log')">📋 Log</button>
+  <button class="dash-nav-btn" onclick="showTab('watchlist')">👀 Watch</button>
   <button class="dash-nav-btn" onclick="showTab('routine')">📅 Routine</button>
   <button class="dash-nav-btn" onclick="showTab('rules')">⚠️ Rules</button>
 </div>
 
 <div id="content">
-  <div id="ai-tab" class="active">
+
+  <!-- SCAN CHECKLIST TAB -->
+  <div id="scan-tab" class="tab active" style="padding:14px 16px;">
+
+    <div style="background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:12px 14px;margin-bottom:12px;">
+      <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--accent);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:3px;">Rule · 6/5/26</div>
+      <div style="font-size:12px;">Score 6+ <strong style="color:var(--accent)">AND</strong> chart confirms = valid trade. Ben BOUGHT = <strong style="color:var(--green)">bonus conviction.</strong></div>
+    </div>
+
+    <!-- TICKER INPUT -->
+    <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
+      <input id="sc-ticker" type="text" placeholder="TICKER" oninput="this.value=this.value.toUpperCase()" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--accent);padding:8px 10px;font-family:'DM Mono',monospace;font-size:16px;font-weight:700;">
+      <input id="sc-contract" type="text" placeholder="e.g. Jun 20 $210C" style="flex:2;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-family:'DM Mono',monospace;font-size:11px;">
+      <button onclick="resetScan()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 10px;border-radius:8px;font-family:'DM Mono',monospace;font-size:9px;cursor:pointer;">↺</button>
+    </div>
+
+    <!-- SCORE METER -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;">
+      <div style="text-align:center;flex-shrink:0;">
+        <div id="sc-score" style="font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1;color:var(--muted);">0</div>
+        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);">/ 10</div>
+      </div>
+      <div style="flex:1;">
+        <div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;margin-bottom:6px;">
+          <div id="sc-bar" style="height:100%;width:0%;background:var(--muted);border-radius:4px;transition:all 0.3s;"></div>
+        </div>
+        <div id="sc-verdict" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">Fill checklist below...</div>
+      </div>
+    </div>
+
+    <!-- GO/NO GO BOX -->
+    <div id="sc-box" style="background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:12px;text-align:center;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.06em;color:var(--muted);">FILL CHECKLIST TO TRADE</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;">Minimum 7/10 to enter</div>
+    </div>
+
+    <!-- SCANNER SECTION -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:8px;">
+      <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">📡 Scanner — Required</div>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="1"><span><strong>Spyder Score 6+</strong> — no exceptions</span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="1"><span><strong>Sweep flagged</strong> — institutional urgency</span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="1"><span><strong>At Ask or Above Ask</strong> — full conviction</span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="1"><span><strong>Premium $100k+</strong> — real money</span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="1"><span><strong>Strike within range</strong> — not $10+ away</span></label>
+    </div>
+
+    <!-- CHART SECTION -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:8px;">
+      <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--accent2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">📈 Chart — Required</div>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="1"><span><strong>Stock above VWAP</strong> on 5-min chart</span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="1"><span><strong>S/R agrees</strong> — near support, room to resistance</span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="1"><span><strong>Not chasing</strong> — not already up 5%+</span></label>
+    </div>
+
+    <!-- CONVICTION BOOSTERS -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:8px;">
+      <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">⭐ Conviction Boosters</div>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="1"><span><strong>Ben BOUGHT alert</strong> — always a trade</span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="0"><span><strong>Both scanners stacking</strong></span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="0"><span><strong>SPY green / above VWAP</strong></span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="0"><span><strong>Ethan watchlist match</strong></span></label>
+    </div>
+
+    <!-- HALT -->
+    <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:8px;">
+      <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--red);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">🛑 H.A.L.T. — Must Pass</div>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="0"><span>Not Hungry · Angry · Lonely · Tired</span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="0"><span>Bracket pre-filled in IBKR</span></label>
+      <label class="checklist-item" onclick="scToggle()"><input type="checkbox" class="sc-check" data-pts="0"><span>Not Friday without Monday plan</span></label>
+    </div>
+
+  </div>
     <div style="padding:10px 16px 0;display:flex;gap:6px;">
       <button onclick="openBulk()" style="flex:1;padding:9px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.3);border-radius:8px;color:var(--accent2);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">⚡ Bulk Import</button>
     </div>
@@ -2537,18 +2609,47 @@ function escHtml(str) {
 
 function showTab(id) {
   document.querySelectorAll('.dash-nav-btn').forEach((b,i)=>{
-    const ids=['ai','log','watchlist','routine','rules'];
+    const ids=['scan','ai','log','watchlist','routine','rules'];
     b.classList.toggle('active', ids[i]===id);
+    if(ids[i]==='scan') b.style.borderBottomColor = ids[i]===id ? '#00d4aa' : 'transparent';
   });
   const aiTab = document.getElementById('ai-tab');
+  const scanTab = document.getElementById('scan-tab');
   const tabs = ['log','watchlist','routine','rules'];
   aiTab.classList.toggle('active', id==='ai');
   aiTab.style.display = id==='ai' ? 'flex' : 'none';
+  scanTab.classList.toggle('active', id==='scan');
   tabs.forEach(t=>{
     document.getElementById(t+'-tab').classList.toggle('active', t===id);
   });
   if (id==='log') renderTradeLog();
   if (id==='watchlist') renderWatchlist();
+}
+
+function scToggle() {
+  setTimeout(()=>{
+    let score = 0;
+    document.querySelectorAll('.sc-check').forEach(c=>{ if(c.checked) score += parseInt(c.dataset.pts||0); });
+    const el = document.getElementById('sc-score');
+    const bar = document.getElementById('sc-bar');
+    const verdict = document.getElementById('sc-verdict');
+    const box = document.getElementById('sc-box');
+    el.textContent = score;
+    bar.style.width = Math.min(score/10*100,100)+'%';
+    if(score>=9){ bar.style.background='#22c55e'; el.style.color='#22c55e'; verdict.style.color='#22c55e'; verdict.textContent='Maximum conviction — execute!'; box.style.background='rgba(34,197,94,0.08)'; box.style.borderColor='rgba(34,197,94,0.4)'; box.innerHTML='<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;letter-spacing:0.06em;color:#22c55e;">✅ HIGH CONVICTION — TRADE IT</div><div style="font-size:11px;color:#22c55e;margin-top:2px;">All systems green. Execute your bracket.</div>'; }
+    else if(score>=7){ bar.style.background='#00d4aa'; el.style.color='#00d4aa'; verdict.style.color='#00d4aa'; verdict.textContent='Valid setup — proceed'; box.style.background='rgba(0,212,170,0.08)'; box.style.borderColor='rgba(0,212,170,0.4)'; box.innerHTML='<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;letter-spacing:0.06em;color:#00d4aa;">✅ VALID TRADE — PROCEED</div><div style="font-size:11px;color:#00d4aa;margin-top:2px;">Minimum met. Size appropriately.</div>'; }
+    else if(score>=5){ bar.style.background='#eab308'; el.style.color='#eab308'; verdict.style.color='#eab308'; verdict.textContent='Borderline — wait for more'; box.style.background='rgba(234,179,8,0.08)'; box.style.borderColor='rgba(234,179,8,0.4)'; box.innerHTML='<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;letter-spacing:0.06em;color:#eab308;">⚠️ BORDERLINE — WAIT</div><div style="font-size:11px;color:#eab308;margin-top:2px;">Missing confirms. Watch, don\'t enter.</div>'; }
+    else if(score>0){ bar.style.background='#ef4444'; el.style.color='#ef4444'; verdict.style.color='#ef4444'; verdict.textContent='Too many boxes unchecked'; box.style.background='rgba(239,68,68,0.08)'; box.style.borderColor='rgba(239,68,68,0.4)'; box.innerHTML='<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;letter-spacing:0.06em;color:#ef4444;">❌ NO TRADE — SKIP IT</div><div style="font-size:11px;color:#ef4444;margin-top:2px;">Score too low. Next opportunity.</div>'; }
+    else{ bar.style.background='var(--muted)'; el.style.color='var(--muted)'; verdict.style.color='var(--muted)'; verdict.textContent='Fill checklist below...'; box.style.background='var(--surface2)'; box.style.borderColor='var(--border)'; box.innerHTML='<div style="font-family:\'Bebas Neue\',sans-serif;font-size:24px;letter-spacing:0.06em;color:var(--muted);">FILL CHECKLIST TO TRADE</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Minimum 7/10 to enter</div>'; }
+  }, 50);
+}
+
+function resetScan() {
+  document.querySelectorAll('.sc-check').forEach(c=>c.checked=false);
+  document.getElementById('sc-ticker').value='';
+  document.getElementById('sc-contract').value='';
+  scToggle();
+  showToast('Checklist reset ↺');
 }
 
 function renderStats() {
@@ -2913,7 +3014,8 @@ renderChips();
 renderMessages();
 renderRoutine();
 renderRules();
-document.getElementById('ai-tab').style.display = 'flex';
+document.getElementById('ai-tab').style.display = 'none';
+document.getElementById('scan-tab').classList.add('active');
 function openAddTrade() {
   ['at-ticker','at-contract','at-source','at-entry','at-stop','at-t1','at-cost','at-result','at-notes'].forEach(id=>{
     const el = document.getElementById(id);
