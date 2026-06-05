@@ -777,6 +777,7 @@ canvas.chart{display:block;width:100%;height:auto;}
     </div>
 
   </div>
+  <div id="ai-tab" class="tab" style="display:none;flex-direction:column;">
     <div style="padding:10px 16px 0;display:flex;gap:6px;">
       <button onclick="openBulk()" style="flex:1;padding:9px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.3);border-radius:8px;color:var(--accent2);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">⚡ Bulk Import</button>
     </div>
@@ -2616,8 +2617,8 @@ function showTab(id) {
   const aiTab = document.getElementById('ai-tab');
   const scanTab = document.getElementById('scan-tab');
   const tabs = ['log','watchlist','routine','rules'];
-  aiTab.classList.toggle('active', id==='ai');
-  aiTab.style.display = id==='ai' ? 'flex' : 'none';
+  if(id==='ai'){ aiTab.classList.add('active'); aiTab.style.display='flex'; }
+  else { aiTab.classList.remove('active'); aiTab.style.display='none'; }
   scanTab.classList.toggle('active', id==='scan');
   tabs.forEach(t=>{
     document.getElementById(t+'-tab').classList.toggle('active', t===id);
