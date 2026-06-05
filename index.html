@@ -734,7 +734,7 @@ canvas.chart{display:block;width:100%;height:auto;}
   <div id="routine-tab" class="tab">
     <div class="golden-rule">
       <div class="lbl">Golden Rule</div>
-      Golden Sweep fires + Ben sends BOUGHT → <strong style="color:var(--green)">That's your trade.</strong>
+      Golden Sweep fires + Ben sends BOUGHT → <strong style="color:var(--green)">That's your trade.</strong> No BOUGHT? Score 6+ AND chart confirms = still a valid trade.
     </div>
     <div id="routine-list"></div>
   </div>
@@ -885,6 +885,7 @@ canvas.chart{display:block;width:100%;height:auto;}
         <button class="pat-btn" onclick="showPattern('volume')">Volume</button>
         <button class="pat-btn" onclick="showPattern('stage2')">Stage 2</button>
         <button class="pat-btn" onclick="showPattern('volprofile')">Vol Profile</button>
+        <button class="pat-btn" style="color:var(--accent2);border-color:rgba(255,107,53,0.3);" onclick="showPattern('sr')">S/R Lines ⭐</button>
       </div>
     </div>
 
@@ -1809,6 +1810,171 @@ canvas.chart{display:block;width:100%;height:auto;}
   </div>
 </div>
 
+<!-- S/R LINES PATTERN PANEL -->
+<div class="pattern-panel" id="pat-sr">
+  <div class="pattern-card">
+    <div class="card-title" style="color:var(--accent2)">Support &amp; Resistance Lines</div>
+    <div class="card-sub">Foundation Skill · How to Find the Levels That Matter</div>
+
+    <div class="tip-box orange">
+      <div class="tip-lbl orange">The Big Idea</div>
+      S/R lines aren't magic — they're prices where lots of people made decisions before. Where buyers stepped in (support) or sellers stepped in (resistance). The more times price touched and reacted to a level, the more meaningful it is. <strong>Draw fewer lines, not more.</strong> Your job is to find the 2–3 levels that matter most.
+    </div>
+
+    <!-- THE 4 PATTERNS SVG -->
+    <div class="chart-wrap">
+      <div class="chart-label">The 4 Patterns That Create Valid S/R Lines</div>
+      <svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;display:block;">
+        <!-- Background -->
+        <rect width="560" height="220" fill="#13161e" rx="8"/>
+
+        <!-- PATTERN 1: BOUNCE / SUPPORT -->
+        <text x="14" y="18" fill="#00d4aa" font-size="9" font-family="monospace" letter-spacing="1">PATTERN 1 — BOUNCE (Support)</text>
+        <line x1="14" y1="95" x2="130" y2="95" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="14" y="105" fill="#6b7280" font-size="8" font-family="monospace">SUPPORT</text>
+        <!-- price falls, bounces, falls again, bounces again -->
+        <polyline points="14,28 30,35 50,60 65,95 80,75 95,85 110,95 125,60 132,45" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
+        <circle cx="65" cy="95" r="3" fill="#22c55e"/>
+        <circle cx="110" cy="95" r="3" fill="#22c55e"/>
+        <text x="56" y="112" fill="#22c55e" font-size="7" font-family="monospace">bounce</text>
+        <text x="101" y="112" fill="#22c55e" font-size="7" font-family="monospace">bounce</text>
+        <text x="14" y="128" fill="#6b7280" font-size="8" font-family="sans-serif">Same level holds twice = confirmed support</text>
+
+        <!-- DIVIDER -->
+        <line x1="148" y1="10" x2="148" y2="135" stroke="#252a38" stroke-width="1"/>
+
+        <!-- PATTERN 2: CEILING / RESISTANCE -->
+        <text x="158" y="18" fill="#ef4444" font-size="9" font-family="monospace" letter-spacing="1">PATTERN 2 — CEILING (Resistance)</text>
+        <line x1="158" y1="45" x2="274" y2="45" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="158" y="55" fill="#6b7280" font-size="8" font-family="monospace">RESISTANCE</text>
+        <polyline points="158,110 175,90 195,65 210,45 225,65 240,45 255,70 270,90" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
+        <circle cx="210" cy="45" r="3" fill="#ef4444"/>
+        <circle cx="240" cy="45" r="3" fill="#ef4444"/>
+        <text x="200" y="38" fill="#ef4444" font-size="7" font-family="monospace">rejected</text>
+        <text x="229" y="38" fill="#ef4444" font-size="7" font-family="monospace">rejected</text>
+        <text x="158" y="128" fill="#6b7280" font-size="8" font-family="sans-serif">Same ceiling holds twice = confirmed resistance</text>
+
+        <!-- DIVIDER -->
+        <line x1="290" y1="10" x2="290" y2="135" stroke="#252a38" stroke-width="1"/>
+
+        <!-- PATTERN 3: THE FLIP -->
+        <text x="300" y="18" fill="#7b61ff" font-size="9" font-family="monospace" letter-spacing="1">PATTERN 3 — THE FLIP ⭐</text>
+        <line x1="300" y1="70" x2="416" y2="70" stroke="#7b61ff" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="300" y="80" fill="#6b7280" font-size="8" font-family="monospace">OLD RESIST → NEW SUPPORT</text>
+        <!-- price bounces off resistance twice, then breaks through, then comes back to test as support -->
+        <polyline points="300,110 315,90 330,70 345,55 360,40 375,30" fill="none" stroke="#22c55e" stroke-width="1.5"/>
+        <polyline points="300,110 315,95 330,70 320,85" fill="none" stroke="#e8eaf0" stroke-width="1.5"/>
+        <text x="340" y="65" fill="#22c55e" font-size="7" font-family="monospace">BREAKS↑</text>
+        <text x="303" y="100" fill="#7b61ff" font-size="7" font-family="monospace">was ceiling</text>
+        <text x="303" y="128" fill="#6b7280" font-size="8" font-family="sans-serif">Old resistance becomes new support after break</text>
+
+        <!-- DIVIDER -->
+        <line x1="432" y1="10" x2="432" y2="135" stroke="#252a38" stroke-width="1"/>
+
+        <!-- PATTERN 4: CLUSTER -->
+        <text x="442" y="18" fill="#eab308" font-size="9" font-family="monospace" letter-spacing="1">PATTERN 4 — CLUSTER</text>
+        <line x1="442" y1="72" x2="554" y2="72" stroke="#eab308" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="442" y="82" fill="#6b7280" font-size="8" font-family="monospace">CLUSTER ZONE</text>
+        <!-- candles clustered around the level with wicks -->
+        <rect x="449" y="55" width="6" height="30" fill="#22c55e" rx="1"/>
+        <line x1="452" y1="50" x2="452" y2="88" stroke="#22c55e" stroke-width="1"/>
+        <rect x="461" y="60" width="6" height="25" fill="#ef4444" rx="1"/>
+        <line x1="464" y1="52" x2="464" y2="90" stroke="#ef4444" stroke-width="1"/>
+        <rect x="473" y="57" width="6" height="28" fill="#22c55e" rx="1"/>
+        <line x1="476" y1="48" x2="476" y2="89" stroke="#22c55e" stroke-width="1"/>
+        <rect x="485" y="62" width="6" height="22" fill="#ef4444" rx="1"/>
+        <line x1="488" y1="54" x2="488" y2="87" stroke="#ef4444" stroke-width="1"/>
+        <rect x="497" y="58" width="6" height="26" fill="#22c55e" rx="1"/>
+        <line x1="500" y1="50" x2="500" y2="86" stroke="#22c55e" stroke-width="1"/>
+        <text x="442" y="128" fill="#6b7280" font-size="8" font-family="sans-serif">Wicks repeatedly touch same zone = it matters</text>
+
+        <!-- BOTTOM DIVIDER -->
+        <line x1="0" y1="140" x2="560" y2="140" stroke="#252a38" stroke-width="1"/>
+
+        <!-- BOTTOM: THE FLIP EXPLAINED -->
+        <text x="14" y="158" fill="#7b61ff" font-size="9" font-family="monospace" font-weight="bold">THE FLIP — Ben's Trigger Line in Action</text>
+        <text x="14" y="172" fill="#6b7280" font-size="9" font-family="sans-serif">When price BREAKS through old resistance with a green close → that level flips to support.</text>
+        <text x="14" y="185" fill="#6b7280" font-size="9" font-family="sans-serif">Ben's "PLTR over $134.50" = $134.50 was old resistance. Breaking it = new support = trigger line.</text>
+        <text x="14" y="200" fill="#00d4aa" font-size="9" font-family="sans-serif" font-weight="bold">The Watch alert price IS the resistance line. The BOUGHT alert = price crossed it.</text>
+      </svg>
+    </div>
+
+    <!-- 5 STEP PROCESS -->
+    <div style="margin:16px 0 8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;">The 5-Step Process — Any Chart, Any Time</div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <div style="background:var(--surface2);border-left:3px solid var(--accent3);border-radius:0 8px 8px 0;padding:12px;font-size:13px;">
+        <div style="color:var(--accent3);font-family:'DM Mono',monospace;font-size:10px;font-weight:600;margin-bottom:4px;">STEP 1 — ZOOM OUT FIRST</div>
+        Pull back to the <strong>daily chart, 3-month view</strong>. Get context before detail. Most people freeze because they start on the 5-min chart. Wrong order. Daily first, always.
+      </div>
+      <div style="background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px;font-size:13px;">
+        <div style="color:var(--accent);font-family:'DM Mono',monospace;font-size:10px;font-weight:600;margin-bottom:4px;">STEP 2 — FIND THE OBVIOUS PEAKS AND VALLEYS</div>
+        Look for the highest highs and lowest lows over 3 months. These are your anchors. If your eye jumps to it immediately — it matters. Don't overthink it.
+      </div>
+      <div style="background:var(--surface2);border-left:3px solid var(--yellow);border-radius:0 8px 8px 0;padding:12px;font-size:13px;">
+        <div style="color:var(--yellow);font-family:'DM Mono',monospace;font-size:10px;font-weight:600;margin-bottom:4px;">STEP 3 — DRAW 2–3 HORIZONTAL LINES MAX</div>
+        A flat line across a clear high = resistance. A flat line across a clear low = support. <strong>Start with 2–3 lines only.</strong> If you're drawing 10 lines you've gone too far. Ask: if I could only draw 3 lines, which 3 would they be?
+      </div>
+      <div style="background:var(--surface2);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:12px;font-size:13px;">
+        <div style="color:var(--accent2);font-family:'DM Mono',monospace;font-size:10px;font-weight:600;margin-bottom:4px;">STEP 4 — CHECK IF PRICE "RESPECTED" THE LINE</div>
+        Did price bounce off that level more than once? Did it stall there? <strong>Multiple touches = the level is real.</strong> One touch = maybe, maybe not.
+      </div>
+      <div style="background:var(--surface2);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:12px;font-size:13px;">
+        <div style="color:var(--green);font-family:'DM Mono',monospace;font-size:10px;font-weight:600;margin-bottom:4px;">STEP 5 — DROP TO 5-MIN AND FIND THE SAME LEVELS</div>
+        Do your daily lines show up as meaningful levels on the intraday chart? When they do — <strong>that's where Ben draws his trigger lines.</strong> Your S/R line IS the Watch alert price.
+      </div>
+    </div>
+
+    <!-- NVDA LIVE EXAMPLE -->
+    <div style="background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:8px;padding:14px;margin-bottom:14px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">📊 Live Example — NVDA (June 2026)</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Apply the 5 steps to NVDA right now. Here's exactly what the daily chart shows:</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-family:'DM Mono',monospace;font-size:12px;">
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:6px;">
+          <span style="color:#ef4444;font-weight:700;">$235–236</span>
+          <span style="color:#ef4444;">RESISTANCE</span>
+          <span style="color:#6b7280;font-size:11px;">May high — clear peak, price rejected hard</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.2);border-radius:6px;">
+          <span style="color:#eab308;font-weight:700;">~$211</span>
+          <span style="color:#eab308;">SUPPORT</span>
+          <span style="color:#6b7280;font-size:11px;">Recovery consolidation zone + 50-day EMA</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:6px;">
+          <span style="color:#22c55e;font-weight:700;">$200</span>
+          <span style="color:#22c55e;">SUPPORT</span>
+          <span style="color:#6b7280;font-size:11px;">Major round number floor — April recovery base</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(107,114,128,0.08);border:1px solid rgba(107,114,128,0.2);border-radius:6px;">
+          <span style="color:#6b7280;font-weight:700;">$165</span>
+          <span style="color:#6b7280;">DEEP SUPPORT</span>
+          <span style="color:#6b7280;font-size:11px;">April panic low — never want to see this again</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--text);line-height:1.6;">
+        <strong style="color:var(--accent)">How the scanner connected today:</strong> NVDA $210 calls firing Score 8 at 11:30 AM when stock was at $208-209 — smart money betting on a bounce off the $200-211 support zone back up toward $235 resistance. The S/R map told you WHY that price level mattered before the scanner fired.
+      </div>
+    </div>
+
+    <!-- THE RULE THAT STOPS FREEZING -->
+    <div class="tip-box orange">
+      <div class="tip-lbl orange">🔑 The Rule That Stops the Freezing</div>
+      If you have to think hard about whether a line belongs there — it probably doesn't. The levels that matter are the ones that make you say <em>"oh yeah, obviously."</em> Start there every time. Draw fewer lines. The obvious ones are always the right ones.
+    </div>
+
+    <!-- WEEKEND EXERCISE -->
+    <div style="background:rgba(123,97,255,0.06);border:1px solid rgba(123,97,255,0.2);border-radius:8px;padding:14px;margin-top:12px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent3);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">📝 Weekend Practice Exercise</div>
+      <div style="font-size:13px;line-height:1.7;">Pull up any name on IBKR daily chart, 3 months. Ask yourself <strong>3 questions only:</strong><br>
+      <span style="color:var(--green)">1.</span> Where did price turn around going UP? → <strong>resistance</strong><br>
+      <span style="color:var(--green)">2.</span> Where did price turn around going DOWN? → <strong>support</strong><br>
+      <span style="color:var(--green)">3.</span> Did any old ceiling become a new floor after price broke through? → <strong>the flip</strong><br><br>
+      Do it on NVDA, TSLA, and one name from Ethan's watchlist. By Monday you'll start seeing them without thinking.</div>
+    </div>
+
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════ TAB 2: PRE-ENTRY CHECKLIST ═══════════════════════════════════════ -->
 <div id="checklist-tab" class="tab">
 
@@ -2305,8 +2471,15 @@ function lsSave(key, data) {
 }
 
 const SEED_TRADES = [
+  { id:'trade-1780603057457z2k', date:'2026-05-18', ticker:'PLTR', contract:'May 22 $137 Call', source:'Ethan Harms', status:'loss', entry:2.58, stop:1.81, t1:5.16, cost:258, result:-77, resultPct:-30, notes:'Trade #1. Missing Ben BOUGHT. Friday Hard Rule born.', confirmations:[], footnote:'' },
+  { id:'trade-1780603057457j9z', date:'2026-05-01', ticker:'SPCE', contract:'Stock shares', source:'Speculative', status:'active', entry:null, stop:null, t1:null, cost:null, result:null, notes:'Long term speculative stock hold.', confirmations:[], footnote:'' },
+  { id:'trade-1780603057457cv2', date:'2026-05-01', ticker:'SIDU', contract:'150 shares stock', source:'Speculative', status:'active', entry:0.76, stop:null, t1:null, cost:114, result:null, notes:'Long term speculative. 150 shares remaining after partial sale.', confirmations:[], footnote:'' },
+  { id:'trade-1780603057457867', date:'2026-06-02', ticker:'MSFT', contract:'Jul 17 $500 Call', source:'B Sturg', status:'loss', entry:5.30, stop:4.40, t1:6.35, cost:530, result:-92, resultPct:null, notes:'Ben BOUGHT on $442.50 pullback. Stopped out at $4.38. Bracket fired clean.', confirmations:[], footnote:'' },
+  { id:'trade-1780603057457hky', date:'2026-06-01', ticker:'TOST', contract:'Jun 5 $28 Call', source:'Ethan watchlist', status:'active', entry:0.68, stop:0.53, t1:1.05, cost:204, result:null, notes:'3 contracts at $0.68. Entered during bootcamp. 4 days to expiry — monitor closely.', confirmations:[], footnote:'' },
+  { id:'trade-1780630574576wr', date:'2026-05-19', ticker:'AMZN', contract:'Jul 17 $290 Call', source:'B Sturg', status:'active', entry:3.40, stop:2.38, t1:4.76, cost:340, result:null, notes:'All 7 confirmations met. Ben BOUGHT 9:43 AM CT. Demand zone held. AMZN reclaimed VWAP. SPY above VWAP. Desktop execution. GTC bracket armed. Jul 17 expiry 59 days. Swing position still open.', confirmations:['Ben BOUGHT alert ✅','Demand zone $255-257 held ✅','AMZN reclaimed VWAP ✅','SPY above VWAP ✅','Desktop execution ✅','GTC bracket armed ✅','Jul 17 expiry — 59 days ✅'], footnote:'' },
+  { id:'trade-1780603074570ce', date:'2026-06-04', ticker:'NVDA', contract:'Jun 5 $220 Call', source:'Independent — Scanner', status:'win', entry:1.62, stop:1.25, t1:2.25, cost:162, result:63, resultPct:null, notes:'First independent trade — no Ben alert needed. Found on scanner, confirmed chart, bracket set. T1 fired automatically in ~1 hour. +102%. System works!', confirmations:[], footnote:'' },
   { id:'pltr-001', date:'2026-05-18', ticker:'PLTR', contract:'May 22 $137 Calls', source:'Ethan Harms', status:'loss', entry:2.58, stop:1.81, t1:5.16, cost:258, result:-77, resultPct:-30, notes:'Trade #1. Market order on phone — bad fill at $2.58. Ben passed on PLTR, missing BOUGHT confirmation. Stopped out automatically. Lessons: wait for BOUGHT, use desktop, bracket works.', confirmations:['Scanner signal ✅','VWAP reclaim ✅','Ben BOUGHT ❌ — MISSING','Desktop execution ❌ — phone used'], footnote:'' },
-  { id:'amzn-002', date:'2026-05-19', ticker:'AMZN', contract:'Jul 17 $290 Calls', source:'B Sturg', status:'win', entry:3.40, stop:2.38, t1:4.76, cost:340, result:136, resultPct:40, notes:'Trade #2. All 7 confirmations met. Ben BOUGHT at 9:43 AM CT. Demand zone $255–$257 held. AMZN reclaimed VWAP. SPY above VWAP. Desktop execution, clean limit fill at $3.40. GTC bracket fired automatically at T1 while driving to office!', confirmations:['Ben BOUGHT alert ✅','Demand zone $255–$257 held ✅','AMZN reclaimed VWAP ✅','SPY above VWAP ✅','Desktop execution ✅','GTC bracket armed ✅','Jul 17 expiry — 59 days ✅'], footnote:'Options vs Stock at T1 ($4.76): Options $340 in → $476 out = +$136 (+40%). Stock would need $25,900 for 100 shares, same move = +$350 (+1.3%). Options used 76x less capital. That\'s leverage.' },
+  { id:'amzn-002', date:'2026-05-19', ticker:'AMZN', contract:'Jul 17 $290 Calls', source:'B Sturg', status:'win', entry:3.40, stop:2.38, t1:4.76, cost:340, result:136, resultPct:40, notes:'Trade #2. All 7 confirmations met. Ben BOUGHT at 9:43 AM CT. Demand zone $255–$257 held. AMZN reclaimed VWAP. SPY above VWAP. Desktop execution, clean limit fill at $3.40. GTC bracket fired automatically at T1 while driving to office!', confirmations:['Ben BOUGHT alert ✅','Demand zone $255-257 held ✅','AMZN reclaimed VWAP ✅','SPY above VWAP ✅','Desktop execution ✅','GTC bracket armed ✅','Jul 17 expiry — 59 days ✅'], footnote:'Options vs Stock at T1 ($4.76): Options $340 in → $476 out = +$136 (+40%). Stock would need $25,900 for 100 shares, same move = +$350 (+1.3%). Options used 76x less capital. That\'s leverage.' },
 ];
 
 const SEED_WATCHLIST = [
