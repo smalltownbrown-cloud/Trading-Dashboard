@@ -608,23 +608,39 @@ async function sendMessage() {
   document.getElementById('send-btn').disabled = true;
 
   try {
-    const apiMessages = chatHistory.map(m=>({ role:m.role, content:m.content }));
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system: buildSystemPrompt(),
-        messages: apiMessages,
-      }),
-    });
-    const data = await res.json();
+    const apiMessages = chatHistory.slice(-10).map(m=>({ role:m.role, content:m.content }));
+    
+    // Try direct first, fall back to proxy
+    let data;
+    const payload = {
+      model:'claude-sonnet-4-6',
+      max_tokens:1000,
+      system: buildSystemPrompt(),
+      messages: apiMessages,
+    };
+
+    const headers = {
+      'Content-Type':'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    };
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers, body: JSON.stringify(payload)
+      });
+      data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+    } catch(e) {
+      // Fall back to corsproxy.io
+      const res2 = await fetch('https://corsproxy.io/?https://api.anthropic.com/v1/messages', {
+        method:'POST', headers, body: JSON.stringify(payload)
+      });
+      data = await res2.json();
+      if (data.error) throw new Error(data.error.message);
+    }
+
     const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('') || '{}';
 
     let parsed;
@@ -641,13 +657,53 @@ async function sendMessage() {
     chatHistory.push({ role:'assistant', content:reply, ts:new Date().toISOString(), hadAction: actionLog.length>0 });
     persistChat();
   } catch(err) {
-    chatHistory.push({ role:'assistant', content:'⚠️ Connection issue — check your internet and try again.', ts:new Date().toISOString() });
+    console.error('AI error:', err);
+    // Fallback: parse the message manually for common commands
+    const text2 = chatHistory[chatHistory.length-1]?.content || '';
+    const fallbackReply = tryManualParse(text2);
+    chatHistory.push({ role:'assistant', content: fallbackReply, ts:new Date().toISOString() });
     persistChat();
   }
 
   aiLoading = false;
   document.getElementById('send-btn').disabled = false;
   renderMessages();
+}
+
+// Manual parser as fallback when API is unreachable
+function tryManualParse(text) {
+  const t = text.toLowerCase();
+  
+  // "log TICKER win/loss $X" pattern
+  const logMatch = text.match(/log\s+([A-Z]+)\s+(win|loss|active)/i);
+  const resultMatch = text.match(/\$?([\-\d]+)\s*(?:result|profit|loss|p&l)?/i);
+  const entryMatch = text.match(/entry\s*\$?([\d.]+)/i);
+  const contractMatch = text.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s*\d+\s*\$[\d.]+\s*(call|put)/i);
+
+  if (logMatch) {
+    const ticker = logMatch[1].toUpperCase();
+    const status = logMatch[2].toLowerCase();
+    const result = resultMatch ? parseFloat(resultMatch[1]) : null;
+    const newTrade = {
+      id: 'trade-'+Date.now(),
+      date: new Date().toISOString().slice(0,10),
+      ticker,
+      status,
+      contract: contractMatch ? contractMatch[0] : '',
+      entry: entryMatch ? parseFloat(entryMatch[1]) : null,
+      result,
+      confirmations: [],
+      footnote: '',
+      notes: 'Logged via manual command'
+    };
+    trades = [newTrade, ...trades];
+    expandedCards.add(newTrade.id);
+    persist(); renderStats(); renderTradeLog();
+    toast('Trade logged ✓');
+    return `✅ Logged ${ticker} as ${status}${result ? ' · Result: $'+result : ''}.\n\n(AI offline — used quick-log mode)`;
+  }
+
+  return '⚠️ AI connection issue. Try again in a moment, or use the + Add Trade button in the Log tab.';
 }
 
 document.getElementById('chat-input').addEventListener('input', function() {
