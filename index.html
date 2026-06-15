@@ -613,7 +613,7 @@ async function sendMessage() {
     // Try direct first, fall back to proxy
     let data;
     const payload = {
-      model:'claude-sonnet-4-6',
+      model:'claude-sonnet-4-20250514',
       max_tokens:1000,
       system: buildSystemPrompt(),
       messages: apiMessages,
