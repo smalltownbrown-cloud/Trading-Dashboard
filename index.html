@@ -594,7 +594,7 @@ button:focus,input:focus,textarea:focus,select:focus{outline:none;}
 #dash-inner #header{flex-shrink:0;}
 #dash-inner #nav{flex-shrink:0;}
 #dash-inner #content{flex:1;overflow-y:visible;}
-#ai-tab{display:none;flex-direction:column;height:80vh;}
+#ai-tab{display:none;flex-direction:column;min-height:70vh;}
 #ai-tab.active{display:flex;}
 
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
@@ -2491,12 +2491,20 @@ function showPanel(id) {
 }
 
 // ===== PLAYBOOK TAB SWITCHER =====
-function showSection(id) {
+function showSection(id, evt) {
+  // Make sure playbook panel is active
+  document.querySelectorAll('.main-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('playbook-panel').classList.add('active');
+  document.querySelectorAll('.top-tab').forEach((b,i) => {
+    b.classList.toggle('active', i===2);
+  });
+  // Switch inner section
   document.querySelectorAll('.pb-wrap .section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.pb-wrap .nav-tab').forEach(t => t.classList.remove('active'));
   const sec = document.getElementById(id);
   if (sec) sec.classList.add('active');
-  if (event && event.target) event.target.classList.add('active');
+  const trigger = evt ? evt.target : (event ? event.target : null);
+  if (trigger) trigger.classList.add('active');
 }
 
 const API_KEY = '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';
@@ -3162,14 +3170,6 @@ document.getElementById('chat-input').addEventListener('keydown', function(e) {
 });
 
 renderStats();
-renderChips();
-renderMessages();
-renderRoutine();
-renderRules();
-document.getElementById('ai-tab').style.display = 'none';
-// Start on Scan Check tab
-showTab('scan');
-
 // Init
 renderStats();
 renderChips();
