@@ -6,9 +6,36 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Merle Trades">
-<title>Merle's Trading Dashboard</title>
+<title>Merle's Trading Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ===== SHARED ===== */
+:root {
+  --bg:#0d0f14; --surface:#13161e; --surface2:#1a1e2a; --border:#252a38;
+  --accent:#00d4aa; --accent2:#ff6b35; --accent3:#7b61ff;
+  --text:#e8eaf0; --muted:#6b7280; --green:#22c55e; --red:#ef4444; --yellow:#eab308;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:15px;}
+button,input,textarea,select{font-family:inherit;}
+button:focus,input:focus,textarea:focus,select:focus{outline:none;}
+
+/* ===== TOP NAV (3 main tabs) ===== */
+#top-header{background:linear-gradient(135deg,#0d0f14,#13161e 60%,#1a1e2a);border-bottom:2px solid var(--accent);padding:16px 20px 0;position:sticky;top:0;z-index:100;}
+#top-header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(0,212,170,0.08),transparent 70%);border-radius:50%;}
+.hub-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,5vw,42px);letter-spacing:0.04em;line-height:1;color:var(--text);}
+.hub-title span{color:var(--accent);}
+.hub-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--accent);text-transform:uppercase;margin-bottom:4px;}
+.top-tabs{display:flex;gap:4px;margin-top:10px;}
+.top-tab{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:10px 18px;border-radius:8px 8px 0 0;cursor:pointer;border:1px solid transparent;border-bottom:none;background:transparent;color:var(--muted);white-space:nowrap;transition:all 0.2s;position:relative;bottom:-2px;}
+.top-tab.active{color:var(--accent);background:var(--surface);border-color:var(--border);border-bottom-color:var(--surface);}
+.top-tab:hover{color:var(--text);}
+
+/* ===== MAIN PANELS ===== */
+.main-panel{display:none;min-height:100vh;}
+.main-panel.active{display:block;}
+
+/* ===== DASHBOARD STYLES ===== */
 :root {
   --bg:#0d0f14; --surface:#13161e; --surface2:#1a1e2a; --border:#252a38;
   --accent:#00d4aa; --accent2:#ff6b35; --accent3:#7b61ff;
@@ -105,11 +132,495 @@ button:focus,input:focus,textarea:focus,select:focus{outline:none;}
 @keyframes fadein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ===== PLAYBOOK STYLES ===== */
+:root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --border: #252a38;
+    --accent: #00d4aa;
+    --accent2: #ff6b35;
+    --accent3: #7b61ff;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0d0f14 0%, #13161e 50%, #1a1e2a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 40px 32px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(0,212,170,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 40%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(123,97,255,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .header-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 8vw, 72px);
+    letter-spacing: 0.04em;
+    line-height: 0.95;
+    color: var(--text);
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .header-sub {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  /* Nav tabs */
+  .nav {
+    display: flex;
+    gap: 4px;
+    padding: 20px 32px 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: none;
+    color: var(--muted);
+    background: transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    position: relative;
+    bottom: -1px;
+  }
+
+  .nav-tab:hover { color: var(--text); }
+
+  .nav-tab.active {
+    color: var(--accent);
+    background: var(--surface);
+    border-color: var(--border);
+    border-bottom-color: var(--surface);
+  }
+
+  /* Sections */
+  .section {
+    display: none;
+    padding: 32px;
+    max-width: 900px;
+  }
+  .section.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--accent);
+    border-radius: 3px 0 0 3px;
+  }
+
+  .card.orange::before { background: var(--accent2); }
+  .card.purple::before { background: var(--accent3); }
+  .card.green::before { background: var(--green); }
+  .card.red::before { background: var(--red); }
+  .card.yellow::before { background: var(--yellow); }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .card.orange .card-title { color: var(--accent2); }
+  .card.purple .card-title { color: var(--accent3); }
+  .card.green .card-title { color: var(--green); }
+  .card.red .card-title { color: var(--red); }
+  .card.yellow .card-title { color: var(--yellow); }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  /* Trade anatomy */
+  .anatomy {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+  }
+
+  .anatomy-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .anatomy-trade {
+    font-size: 18px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+  }
+
+  .anatomy-parts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .anatomy-part {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+
+  .part-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .part-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .part-explain {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Scale out visual */
+  .scale-visual {
+    margin: 16px 0;
+  }
+
+  .scale-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .scale-row:last-child { border-bottom: none; }
+
+  .scale-step {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  .scale-price {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  .scale-bar {
+    height: 6px;
+    border-radius: 3px;
+    flex: 1;
+  }
+
+  .scale-note {
+    font-size: 12px;
+    color: var(--muted);
+    flex: 1;
+    text-align: right;
+  }
+
+  /* Key terms grid */
+  .terms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .term-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .term-word {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .term-def {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .term-example {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* Alert log */
+  .alert-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+
+  .alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .alert-ticker {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+
+  .alert-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .alert-contract {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .alert-levels {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+  }
+
+  .level {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .level.entry { background: rgba(123,97,255,0.15); color: var(--accent3); }
+  .level.target { background: rgba(34,197,94,0.15); color: var(--green); }
+  .level.stop { background: rgba(239,68,68,0.15); color: var(--red); }
+  .level.result { background: rgba(0,212,170,0.15); color: var(--accent); }
+
+  .alert-outcome {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .win { color: var(--green); }
+  .loss { color: var(--red); }
+  .open { color: var(--yellow); }
+
+  /* Tips */
+  .tip-box {
+    background: rgba(0,212,170,0.06);
+    border: 1px solid rgba(0,212,170,0.2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .tip-box.orange {
+    background: rgba(255,107,53,0.06);
+    border-color: rgba(255,107,53,0.2);
+  }
+
+  .tip-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .tip-box.orange .tip-label { color: var(--accent2); }
+
+  p { margin-bottom: 12px; }
+  p:last-child { margin-bottom: 0; }
+
+  ul { padding-left: 20px; }
+  li { margin-bottom: 6px; font-size: 14px; }
+
+  h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin: 24px 0 12px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .badge.live { background: rgba(34,197,94,0.2); color: var(--green); }
+  .badge.new { background: rgba(0,212,170,0.2); color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .header, .nav, .section { padding-left: 20px; padding-right: 20px; }
+    .anatomy-parts { grid-template-columns: 1fr 1fr; }
+  }
+
+/* Fix playbook section visibility inside hub */
+.pb-wrap .section{display:none;padding:32px;max-width:900px;}
+.pb-wrap .section.active{display:block;}
+.pb-wrap .nav{display:flex;gap:4px;padding:16px 20px 0;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;background:var(--bg);position:sticky;top:88px;z-index:90;}
+.pb-wrap .nav::-webkit-scrollbar{display:none;}
+.pb-wrap .nav-tab{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;padding:8px 14px;border-radius:6px 6px 0 0;cursor:pointer;border:1px solid transparent;border-bottom:none;color:var(--muted);background:transparent;white-space:nowrap;transition:all 0.2s;position:relative;bottom:-1px;}
+.pb-wrap .nav-tab:hover{color:var(--text);}
+.pb-wrap .nav-tab.active{color:var(--accent);background:var(--surface);border-color:var(--border);border-bottom-color:var(--surface);}
+
+/* Dashboard height fix for combined view */
+#dashboard-panel html,#dashboard-panel body{height:auto;overflow:visible;}
+#dash-inner{display:flex;flex-direction:column;min-height:100vh;}
+#dash-inner #header{flex-shrink:0;}
+#dash-inner #nav{flex-shrink:0;}
+#dash-inner #content{flex:1;overflow-y:visible;}
+#ai-tab{display:none;flex-direction:column;height:80vh;}
+#ai-tab.active{display:flex;}
+
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes fadein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 </style>
 </head>
 <body>
 
-<div id="header">
+<!-- TOP HEADER WITH 3 MAIN TABS -->
+<div id="top-header">
+  <div class="hub-label">Smart Data Trading · Omen System</div>
+  <div class="hub-title">Merle's <span>Trading Hub</span></div>
+  <div class="top-tabs">
+    <button class="top-tab active" onclick="showPanel('dashboard')">📊 Dashboard</button>
+    <button class="top-tab" onclick="showPanel('charts')">📈 Charts</button>
+    <button class="top-tab" onclick="showPanel('playbook')">📖 Playbook</button>
+  </div>
+</div>
+
+<!-- PANEL 1: DASHBOARD -->
+<div id="dashboard-panel" class="main-panel active">
+  <div id="dash-inner">
+    <div id="header">
   <div class="h-label">Smart Data Trading · Omen System</div>
   <div class="h-title">Merle's <span>Dashboard</span></div>
   <div class="h-sub">AI-powered · Standalone · Auto-saves <span id="saving-indicator" style="color:var(--accent);display:none">· Saving...</span></div>
@@ -921,6 +1432,2457 @@ renderRoutine();
 renderRules();
 document.getElementById('ai-tab').style.display = 'none';
 // Start on Scan Check tab
+showTab('scan');
+</script>
+  </div>
+</div>
+
+
+<div id="charts-panel" class="main-panel">
+  <div style="padding:20px 20px 60px;max-width:900px;">
+
+    <!-- Header -->
+    <div style="margin-bottom:20px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:4px;">Smart Data Trading · Omen System</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:0.04em;line-height:0.95;color:var(--text);">Chart <span style="color:var(--accent);">Analysis</span></div>
+      <div style="color:var(--muted);font-size:13px;margin-top:6px;">Ben's 5 Strategies · IBKR Setup · S/R Process · POC Rules</div>
+    </div>
+
+    <!-- IBKR Chart Template -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:0.06em;margin-bottom:4px;">📊 Your IBKR Chart Template</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:14px;">Built 6/5/26 — use this template for every trade</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="width:14px;height:14px;border-radius:50%;background:#c084fc;flex-shrink:0;display:inline-block;"></span>
+          <strong>VWAP</strong> — Lavender/purple line · Your primary directional filter
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="width:14px;height:14px;border-radius:50%;background:#60a5fa;flex-shrink:0;display:inline-block;"></span>
+          <strong>21 EMA</strong> — Blue line · Mean reversion target (rubber band center)
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="width:14px;height:14px;border-radius:50%;background:#f97316;flex-shrink:0;display:inline-block;"></span>
+          <strong>34 EMA</strong> — Orange line · Key support/bounce level
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="width:14px;height:14px;border-radius:50%;background:var(--green);flex-shrink:0;display:inline-block;"></span>
+          <strong>Keltner Channel 1x</strong> — Green · Normal daily range
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="width:14px;height:14px;border-radius:50%;background:var(--yellow);flex-shrink:0;display:inline-block;"></span>
+          <strong>Keltner Channel 2x</strong> — Yellow · Extended — watch for exhaustion
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="width:14px;height:14px;border-radius:50%;background:var(--red);flex-shrink:0;display:inline-block;"></span>
+          <strong>Keltner Channel 3x</strong> — Red · Extreme — 95%+ reversal probability
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="width:14px;height:14px;border-radius:50%;background:var(--text);flex-shrink:0;display:inline-block;"></span>
+          <strong>Volume Profile (right side)</strong> · White line = POC (Point of Control)
+        </div>
+      </div>
+    </div>
+
+    <!-- POC Rules -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent3);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent3);letter-spacing:0.06em;margin-bottom:4px;">⚪ POC Rules</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:14px;">Point of Control — where most volume traded</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="padding:12px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;font-size:13px;">
+          <strong style="color:var(--red)">POC ABOVE price</strong> → Resistance overhead · Wait for price to break through before entering
+        </div>
+        <div style="padding:12px 14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:8px;font-size:13px;">
+          <strong style="color:var(--green)">POC BELOW price</strong> → Floor/Support · Good entry — POC acting as foundation
+        </div>
+        <div style="padding:12px 14px;background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.2);border-radius:8px;font-size:13px;">
+          <strong style="color:var(--yellow)">POC AT price</strong> → Congestion zone · Wait for candle confirmation before entering
+        </div>
+      </div>
+    </div>
+
+    <!-- S/R Identification Process -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--yellow);letter-spacing:0.06em;margin-bottom:4px;">📐 S/R Identification Process</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:14px;">Do this before every trade — top down approach</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="color:var(--yellow);font-weight:700;flex-shrink:0;">1️⃣</span>
+          <span><strong>Zoom to Daily chart</strong> — see the big picture first</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="color:var(--yellow);font-weight:700;flex-shrink:0;">2️⃣</span>
+          <span><strong>Find peaks and valleys</strong> — where did price bounce or reverse repeatedly?</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="color:var(--yellow);font-weight:700;flex-shrink:0;">3️⃣</span>
+          <span><strong>Draw 2–3 lines max</strong> — only the most obvious levels, multiple touches required</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;">
+          <span style="color:var(--yellow);font-weight:700;flex-shrink:0;">4️⃣</span>
+          <span><strong>Drop to 5-min chart</strong> — confirm levels hold at intraday scale</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.2);border-radius:8px;font-size:13px;">
+          <span style="color:var(--accent);font-weight:700;flex-shrink:0;">✅</span>
+          <span>Entry only when price is <strong>above S/R level</strong> with VWAP confirming · Strike should agree with direction</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ben's 5 Strategies -->
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;color:var(--text);margin:20px 0 12px;">Ben's 5 Market Strategies</div>
+
+    <!-- Strategy 1 -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);letter-spacing:0.06em;margin-bottom:4px;">Strategy 1 — VWAP Pullback</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">Day trade · Golden Hour (1–3 PM CT) · Most reliable</div>
+      <p style="font-size:13px;margin-bottom:10px;"><strong>The idea:</strong> Stock strong all day, pulls back to VWAP, bounces. You've watched it all day — that's your data advantage.</p>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;">📊 Use 5-min chart · VWAP visible (lavender line)</div>
+        <div style="padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;">✅ Stock strong in morning · held above VWAP all day</div>
+        <div style="padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;">⏳ Wait for pullback TO VWAP in afternoon</div>
+        <div style="padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;">🎯 Buy call when price BOUNCES off VWAP</div>
+        <div style="padding:8px 12px;background:rgba(239,68,68,0.08);border-radius:6px;font-size:12px;color:var(--red);">🛑 Stop just BELOW VWAP — if it breaks through, you're wrong</div>
+        <div style="padding:8px 12px;background:rgba(34,197,94,0.08);border-radius:6px;font-size:12px;color:var(--green);">🎯 Target: previous high of the day · This week or next week expiry</div>
+      </div>
+    </div>
+
+    <!-- Strategy 2 -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent3);border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent3);letter-spacing:0.06em;margin-bottom:4px;">Strategy 2 — SPY Rubber Band</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">Swing trade · Daily chart · Keltner Channels</div>
+      <p style="font-size:13px;margin-bottom:10px;"><strong>The idea:</strong> Market stretches too far from its average — like a rubber band — then snaps back. Trade the snap.</p>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;"><span style="color:#60a5fa">■</span> 21 EMA = mean (home base) · <span style="color:var(--green)">■</span> 1x = normal · <span style="color:var(--yellow)">■</span> 2x = extended · <span style="color:var(--red)">■</span> 3x = extreme</div>
+        <div style="padding:8px 12px;background:rgba(239,68,68,0.08);border-radius:6px;font-size:12px;"><strong style="color:var(--red)">SPY hits 3x Keltner (red line)</strong> → highest probability reversal signal</div>
+        <div style="padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;">3x BELOW mean → buy CALLS · 3x ABOVE mean → buy PUTS</div>
+        <div style="padding:8px 12px;background:rgba(34,197,94,0.08);border-radius:6px;font-size:12px;color:var(--green);">🎯 Target: price returns to 21 EMA · Strike just below mean · 2 weeks expiry</div>
+        <div style="padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:12px;">In past year SPY hit ±3x only 6 times — EVERY time it bounced back</div>
+      </div>
+    </div>
+
+    <!-- Strategy 3 -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--yellow);letter-spacing:0.06em;margin-bottom:4px;">Strategy 3 — Market Moment (Earnings)</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">Scheduled events · Predictable catalyst · 3 approaches</div>
+      <p style="font-size:13px;margin-bottom:10px;"><strong>The idea:</strong> Earnings are SCHEDULED. You know exactly when a big move is coming. Ben's algo scores 83 data points to predict direction.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div style="padding:10px;background:var(--surface2);border-radius:8px;font-size:11px;text-align:center;"><div style="color:var(--yellow);font-weight:600;margin-bottom:4px;">Strat A</div>Buy before · sell before announcement · Medium risk</div>
+        <div style="padding:10px;background:var(--surface2);border-radius:8px;font-size:11px;text-align:center;"><div style="color:var(--accent2);font-weight:600;margin-bottom:4px;">Strat B</div>Hold through announcement · Highest risk/reward</div>
+        <div style="padding:10px;background:var(--surface2);border-radius:8px;font-size:11px;text-align:center;"><div style="color:var(--green);font-weight:600;margin-bottom:4px;">Strat C</div>Buy the continuation after breakout · Lowest risk</div>
+      </div>
+      <div style="padding:8px 12px;background:rgba(234,179,8,0.08);border-radius:6px;font-size:12px;color:var(--yellow);">⚠️ VIX Rule: If VIX above $16 → go smaller. High fear = expensive, unpredictable options.</div>
+    </div>
+
+    <!-- Strategy 4 -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent2);letter-spacing:0.06em;margin-bottom:4px;">Strategy 4 — Market Money (Smart Flow)</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">Follow institutional money · Omen Scanner · 4 signs of aggression</div>
+      <p style="font-size:13px;margin-bottom:10px;"><strong>The idea:</strong> Institutions move billions. When they make a massive unusual options bet, follow them. Ben's scanner detects it before the crowd.</p>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="padding:8px 12px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:6px;font-size:12px;"><strong style="color:var(--green)">Sign 1 — SWEEP:</strong> Took everything across all exchanges simultaneously · Maximum urgency</div>
+        <div style="padding:8px 12px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.2);border-radius:6px;font-size:12px;"><strong style="color:var(--accent2)">Sign 2 — ABOVE ASK:</strong> Paid MORE than asking price · Speed over cost · Strongest signal</div>
+        <div style="padding:8px 12px;background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);border-radius:6px;font-size:12px;"><strong style="color:var(--accent)">Sign 3 — LARGE PREMIUM:</strong> $100K+ spent · Institutional money · Big conviction</div>
+        <div style="padding:8px 12px;background:rgba(123,97,255,0.08);border:1px solid rgba(123,97,255,0.2);border-radius:6px;font-size:12px;"><strong style="color:var(--accent3)">Sign 4 — SHORT DATED:</strong> Near expiry · Expecting move SOON · Urgency of time</div>
+        <div style="padding:8px 12px;background:rgba(255,107,53,0.12);border:2px solid rgba(255,107,53,0.4);border-radius:6px;font-size:12px;text-align:center;color:var(--accent2);font-weight:600;">All 4 Together = Maximum Aggression · Highest Conviction Entry</div>
+      </div>
+    </div>
+
+    <!-- Strategy 5 -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:0.06em;margin-bottom:4px;">Strategy 5 — Market Math</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">3 types of math align · Highest probability setups</div>
+      <p style="font-size:13px;margin-bottom:10px;"><strong>The idea:</strong> When historical patterns, volume data, AND cheap options all point the same direction — that's a rare, high-conviction opportunity.</p>
+      <div style="display:grid;grid-template-columns:1fr;gap:8px;">
+        <div style="padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;"><strong style="color:var(--accent)">1. Historical Math</strong> — Charts repeat because humans repeat. Same patterns, same psychology.</div>
+        <div style="padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;"><strong style="color:var(--accent)">2. Volume Math</strong> — POC: price compresses near Point of Control → big move building. More volume = bigger eventual move.</div>
+        <div style="padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;"><strong style="color:var(--accent)">3. Options Math</strong> — Low volatility + options cheap + big move historically due = options "on sale." Buy the cheap lottery ticket with math behind it.</div>
+      </div>
+      <div style="margin-top:10px;padding:10px 14px;background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.2);border-radius:8px;font-size:12px;">If wrong: lose the premium (small). If right: 5x–15x return. All 3 math types aligning is rare — when they do, size up.</div>
+    </div>
+
+    <!-- Ben's Pre-Trade Workflow -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);letter-spacing:0.06em;margin-bottom:4px;">⚡ Ben's Pre-Trade Workflow</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;">What happens BEFORE every alert he sends</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;"><span style="color:var(--accent3);font-weight:700;flex-shrink:0;">STEP 1</span> Scanner fires → unusual institutional flow spotted</div>
+        <div style="display:flex;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;"><span style="color:var(--accent);font-weight:700;flex-shrink:0;">STEP 2</span> Opens chart → draws trigger line, target line, stop line, checks VWAP + S/R</div>
+        <div style="display:flex;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;"><span style="color:var(--yellow);font-weight:700;flex-shrink:0;">STEP 3</span> Pre-plans exact trade: contract, entry, bracket, size — BEFORE it happens</div>
+        <div style="display:flex;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;"><span style="color:var(--accent2);font-weight:700;flex-shrink:0;">STEP 4</span> Sends WATCH alert → "over $X" = his trigger line</div>
+        <div style="display:flex;gap:12px;padding:10px 14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:8px;font-size:13px;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">STEP 5</span> Price hits → executes in seconds → sends BOUGHT alert → that's your GO signal</div>
+      </div>
+      <div style="margin-top:10px;padding:10px 14px;background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.2);border-radius:8px;font-size:12px;"><strong>Key insight:</strong> By the time Ben sends BOUGHT, you should already have the bracket pre-filled in IBKR waiting to transmit. The alert is the green light — not the starting gun.</div>
+    </div>
+
+    <!-- Best Scan Times -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent3);border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent3);letter-spacing:0.06em;margin-bottom:14px;">⏰ Best Times to Scan</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="padding:12px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:8px;font-size:12px;">
+          <div style="color:var(--green);font-weight:700;font-family:'DM Mono',monospace;font-size:11px;margin-bottom:6px;">🔔 FIRST HOUR · 9:30–10:30 AM</div>
+          Institutions sneak in trades at open. Most aggressive activity. Above Ask in first 10 min = positioning for same/next day move.
+        </div>
+        <div style="padding:12px;background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.25);border-radius:8px;font-size:12px;">
+          <div style="color:var(--accent);font-weight:700;font-family:'DM Mono',monospace;font-size:11px;margin-bottom:6px;">⚡ GOLDEN HOUR · 1–3 PM CT</div>
+          Ben's VWAP setups fire here. Most reliable entries. You've watched all day — you have data. Primary trading window.
+        </div>
+        <div style="padding:12px;background:rgba(123,97,255,0.08);border:1px solid rgba(123,97,255,0.25);border-radius:8px;font-size:12px;">
+          <div style="color:var(--accent3);font-weight:700;font-family:'DM Mono',monospace;font-size:11px;margin-bottom:6px;">🌙 LAST HOUR · 3–4 PM CT</div>
+          Pre-close positioning. Someone drops $40K on calls in last 10 min = they know something. Tomorrow's setups show up here.
+        </div>
+        <div style="padding:12px;background:rgba(107,114,128,0.08);border:1px solid rgba(107,114,128,0.25);border-radius:8px;font-size:12px;">
+          <div style="color:var(--muted);font-weight:700;font-family:'DM Mono',monospace;font-size:11px;margin-bottom:6px;">🚫 AVOID · 10:30 AM–12 PM</div>
+          Choppy, indecisive tape. Institutions mostly done positioning. Low conviction signals. Best to step away.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PANEL 2: PLAYBOOK -->
+<div id="playbook-panel" class="main-panel">
+  <div class="pb-wrap">
+    <div class="nav">
+      <div class="nav-tab active" onclick="showSection('routine')" style="color:var(--green); font-weight:700; font-size:12px">📅 Daily Routine</div>
+  <div class="nav-tab" onclick="showSection('basics')">Basics</div>
+  <div class="nav-tab" onclick="showSection('anatomy')">Alerts</div>
+  <div class="nav-tab" onclick="showSection('exits')">Exits</div>
+  <div class="nav-tab" onclick="showSection('terms')">Terms</div>
+  <div class="nav-tab" onclick="showSection('placing')">Order Entry</div>
+  <div class="nav-tab" onclick="showSection('strategies')">Strategies</div>
+  <div class="nav-tab" onclick="showSection('omenhandbook')" style="color:var(--accent2); font-weight:600">📖 Omen Bible</div>
+  <div class="nav-tab" onclick="showSection('cheatsheet')" style="color:var(--accent); font-weight:600">⚡ Cheat Sheet</div>
+    </div>
+    <div style="text-align:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);padding:6px;letter-spacing:0.1em;background:rgba(0,212,170,0.05);border-bottom:1px solid var(--border)">← SWIPE · 📅 Routine · Basics · Alerts · Exits · Terms · Order Entry · Strategies · 📖 Omen Bible · ⚡ Cheat Sheet →</div>
+    <div id="routine" class="section active">
+
+  <p style="color:var(--muted); font-size:13px; margin-bottom:16px">Your daily trading discipline · Start here every single day · Central Time</p>
+
+  <div class="tip-box" style="margin-bottom:20px">
+    <div class="tip-label">The Simple Starting Rule</div>
+    Only take trades that show up in BOTH <strong>Golden Sweep AND Ben's BOUGHT alert</strong>. When those two align — that's your signal. Everything else is education right now.
+  </div>
+
+  <!-- MORNING -->
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; position:relative; overflow:hidden">
+    <div style="position:absolute; top:0; left:0; width:3px; height:100%; background:var(--accent)"></div>
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.06em; color:var(--accent); margin-bottom:4px">☀️ Morning · Before 9:30 AM CT · 15 Min</div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px">
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>1️⃣</span> Say <strong>"check my alerts"</strong> in Claude → briefed + playbook updated
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>2️⃣</span> Open IBKR → type <strong>SPY</strong> → 10 seconds → green or red? Above or below VWAP?
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>3️⃣</span> Omen scanner → run <strong>Golden Sweep</strong> → note Score 6+ names with green price
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>4️⃣</span> Write down <strong>1-2 names</strong> to watch today
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKET OPEN -->
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; position:relative; overflow:hidden">
+    <div style="position:absolute; top:0; left:0; width:3px; height:100%; background:var(--accent2)"></div>
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.06em; color:var(--accent2); margin-bottom:4px">🔔 Market Open · 9:30–10:00 AM CT</div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px">
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>1️⃣</span> Watch for Ben's <strong>BOUGHT alerts</strong> — act immediately if one fires
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>2️⃣</span> Run <strong>Ultimate or All The Things</strong> → see what big money did at the open
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>3️⃣</span> First 30 min = most active — big money shows their hand early
+      </div>
+    </div>
+  </div>
+
+  <!-- MIDDAY -->
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; position:relative; overflow:hidden">
+    <div style="position:absolute; top:0; left:0; width:3px; height:100%; background:var(--muted)"></div>
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.06em; color:var(--muted); margin-bottom:4px">☕ Midday · Optional · ~11:30 AM CT</div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px">
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>1️⃣</span> Run another <strong>Golden Sweep</strong> → any new flow on morning names?
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>2️⃣</span> Is SPY still holding its morning direction?
+      </div>
+    </div>
+  </div>
+
+  <!-- GOLDEN HOUR -->
+  <div style="background:var(--surface); border:1px solid rgba(34,197,94,0.4); border-radius:12px; padding:20px; margin-bottom:16px; position:relative; overflow:hidden">
+    <div style="position:absolute; top:0; left:0; width:3px; height:100%; background:var(--green)"></div>
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.06em; color:var(--green); margin-bottom:4px">⚡ Golden Hour · 1–3 PM CT · MOST IMPORTANT</div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px">
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); border-radius:8px; font-size:13px">
+        <span>1️⃣</span> Run <strong>Golden Sweep</strong> → Ben's VWAP setups fire here
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); border-radius:8px; font-size:13px">
+        <span>2️⃣</span> Stock above VWAP? ✅ Strike close to price? ✅ Scanner green? ✅
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); border-radius:8px; font-size:13px">
+        <span>3️⃣</span> Ben sends BOUGHT → <strong>Execute bracket immediately</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER CLOSE -->
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; position:relative; overflow:hidden">
+    <div style="position:absolute; top:0; left:0; width:3px; height:100%; background:var(--accent3)"></div>
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.06em; color:var(--accent3); margin-bottom:4px">🌙 After Close · 5 Minutes</div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px">
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>1️⃣</span> Say <strong>"check my alerts"</strong> → trade log updated, day captured
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>2️⃣</span> One sentence — what did the market tell you today?
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>3️⃣</span> Check H.A.L.T. — how are you feeling going into tomorrow?
+      </div>
+      <div style="display:flex; align-items:flex-start; gap:12px; padding:10px 14px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:8px; font-size:13px">
+        <span>🚨</span> <span><strong style="color:var(--red)">If today is Friday:</strong> Cancel any open buy orders before you close IBKR. Do NOT leave orders sitting over the weekend. Re-evaluate fresh on Monday morning.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOLDEN RULE BOX -->
+  <div style="background:rgba(34,197,94,0.06); border:2px solid rgba(34,197,94,0.3); border-radius:12px; padding:20px; text-align:center; margin-bottom:16px">
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:0.06em; color:var(--green); margin-bottom:8px">The Golden Rule</div>
+    <p style="font-size:14px; color:var(--text)">Golden Sweep fires on a name <strong>+</strong> Ben sends a BOUGHT alert<br>→ <strong style="color:var(--green)">That's your trade.</strong> Everything else is education.</p>
+  </div>
+
+  <!-- FRIDAY / WEEKEND HARD RULE -->
+  <div style="background:rgba(239,68,68,0.08); border:2px solid rgba(239,68,68,0.5); border-radius:12px; padding:20px; margin-bottom:16px; position:relative; overflow:hidden">
+    <div style="position:absolute; top:0; left:0; width:3px; height:100%; background:var(--red)"></div>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px">
+      <span style="font-size:24px">🚨</span>
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.06em; color:var(--red)">Hard Rule — Friday Trades &amp; Weekend Orders</div>
+    </div>
+    <div style="background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.2); border-radius:8px; padding:14px; margin-bottom:12px; font-size:13px; line-height:1.7">
+      <strong style="color:var(--red)">NEVER let a buy order from Friday execute on Monday without a fresh review.</strong><br>
+      A lot can change over the weekend — news, futures, macro events. What was a valid setup Friday may be a trap Monday morning.
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px">
+      <div style="display:flex; align-items:flex-start; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>1️⃣</span> <span>Check <strong>pre-market price</strong> before market open — has it already gapped up significantly? → <strong style="color:var(--red)">Cancel the order</strong></span>
+      </div>
+      <div style="display:flex; align-items:flex-start; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>2️⃣</span> <span>Run a <strong>fresh Omen scan Monday morning</strong> — does the signal still show up? No fresh confirmation = no trade</span>
+      </div>
+      <div style="display:flex; align-items:flex-start; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span>3️⃣</span> <span>Only execute if <strong>both</strong> conditions pass: price hasn't gapped away AND Omen still confirms</span>
+      </div>
+    </div>
+    <div style="margin-top:12px; background:rgba(239,68,68,0.08); border-radius:8px; padding:12px; font-family:'DM Mono',monospace; font-size:11px; color:var(--red); letter-spacing:0.05em; text-align:center">
+      LEARNED THE HARD WAY · PLTR · MAY 18, 2026 · -$111.10
+    </div>
+  </div>
+
+</div>
+
+<div id="basics" class="section">
+
+  <div class="card">
+    <div class="card-title">What Is an Options Contract?</div>
+    <div class="card-subtitle">The foundation of everything Ben trades</div>
+    <p>An options contract gives you the <strong>right to buy a stock at a specific price, by a specific date</strong> — without actually owning the stock. You're betting on the direction the stock will move.</p>
+    <p>The reason traders use options instead of stocks: <strong>small stock moves = big option moves.</strong> When NVDA moved a few percent, Ben's options moved 40%+ in the same day.</p>
+
+    <div class="tip-box">
+      <div class="tip-label">Why this matters</div>
+      You can control 100 shares of NVDA (worth ~$22,000) for just $245. That's the leverage. But it works both ways — options can also lose value fast, which is why stops matter.
+    </div>
+  </div>
+
+  <div class="card orange">
+    <div class="card-title">Calls vs. Puts</div>
+    <div class="card-subtitle">The two directions you can bet</div>
+    <div class="terms-grid">
+      <div class="term-card">
+        <div class="term-word" style="color:var(--green)">CALL option</div>
+        <div class="term-def">A bet the stock goes <strong>UP</strong>. You profit when the stock rises above the strike price.</div>
+        <div class="term-example">Ben bought NVDA $220 calls → he expected NVDA to rise above $220</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--red)">PUT option</div>
+        <div class="term-def">A bet the stock goes <strong>DOWN</strong>. You profit when the stock falls below the strike price.</div>
+        <div class="term-example">Ben would buy puts if he expected a stock to drop</div>
+      </div>
+    </div>
+    <div class="tip-box orange" style="margin-top:16px">
+      <div class="tip-label">Ben's style</div>
+      Ben primarily trades calls — he looks for stocks with strong momentum and unusual order flow pointing upward.
+    </div>
+  </div>
+
+  <div class="card green">
+    <div class="card-title">The Three Things That Make Options Move</div>
+    <div class="card-subtitle">You don't need to memorize Greek letters — just understand these ideas</div>
+    <ul>
+      <li><strong>Stock price moving toward the strike</strong> — the biggest driver. If NVDA is at $215 and you own $220 calls, every dollar NVDA moves up makes your option more valuable.</li>
+      <li><strong>Time decay (Theta)</strong> — options lose value every single day just from time passing. This is why Ben often uses short expirations — he expects quick moves, not long holds.</li>
+      <li><strong>Volatility (Vega)</strong> — when the market gets nervous or excited, options get more expensive. Big news events can spike option prices even if the stock hasn't moved yet.</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ANATOMY OF AN ALERT -->
+
+<div id="anatomy" class="section">
+
+  <div class="card">
+    <div class="card-title">Reading a Ben Sturgill Alert</div>
+    <div class="card-subtitle">Using today's real NVDA trade as the example</div>
+
+    <div class="anatomy">
+      <div class="anatomy-label">The Alert</div>
+      <div class="anatomy-trade">"BOUGHT NVDA May 13 $220 calls at $2.45 — First target $3.00 — Stops $2.00"</div>
+      <div class="anatomy-parts">
+        <div class="anatomy-part">
+          <div class="part-label">Ticker</div>
+          <div class="part-value">NVDA</div>
+          <div class="part-explain">The stock — Nvidia</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Expiration</div>
+          <div class="part-value">May 13</div>
+          <div class="part-explain">This Friday — the contract dies after this date</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Strike</div>
+          <div class="part-value">$220</div>
+          <div class="part-explain">Where Ben expects NVDA to reach</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Type</div>
+          <div class="part-value">Calls</div>
+          <div class="part-explain">Betting the stock goes UP</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Entry price</div>
+          <div class="part-value">$2.45</div>
+          <div class="part-explain">Cost per share ($245 per contract of 100 shares)</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Stop</div>
+          <div class="part-value">$2.00</div>
+          <div class="part-explain">Exit if wrong — limits the loss</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">The "Watch" alert vs. "Bought" alert</div>
+      Ben often sends a "Watch" alert first — "Watch NVDA $220 calls at $2.45" — meaning he's eyeing it but hasn't pulled the trigger yet. When he sends "BOUGHT" that's the actual trade entry. Don't jump in on a Watch alert; wait for the Bought confirmation.
+    </div>
+  </div>
+
+  <div class="card purple">
+    <div class="card-title">What Is a "Starter Position"?</div>
+    <div class="card-subtitle">Seen in today's DIS trade</div>
+    <p>A starter position means Ben bought a <strong>small portion</strong> of what he eventually wants to own. It's a way to get in without risking everything if the trade goes wrong immediately.</p>
+    <ul>
+      <li>If it starts working → he adds more shares (called "adding to a winner")</li>
+      <li>If it fails quickly → the loss is small because he only had a starter size in</li>
+    </ul>
+    <p>Today's DIS trade was a starter that stopped out at a loss. That's normal — even Ben takes losses. What matters is they're small losses.</p>
+  </div>
+
+  <div class="card yellow">
+    <div class="card-title">The Daily Watchlist (Ethan Harms)</div>
+    <div class="card-subtitle">What those morning emails mean</div>
+    <p>Each morning Ethan sends a watchlist like: <em>"UBER 5/22 $77 calls — over $76.50"</em></p>
+    <p>That means: <strong>only consider this trade if UBER stock breaks ABOVE $76.50.</strong> That price level is the trigger — the confirmation that momentum is actually happening. Don't buy the option just because it's on the list. Wait for the trigger price to be hit.</p>
+  </div>
+
+</div>
+
+<!-- EXIT STRATEGY -->
+
+<div id="exits" class="section">
+
+  <div class="card green">
+    <div class="card-title">Scaling Out — Ben's Exit Method</div>
+    <div class="card-subtitle">The solution to "when do I sell?" — from today's NVDA trade</div>
+    <p>Instead of trying to pick the perfect exit, Ben sells in <strong>multiple pieces</strong> at preset targets. Here's exactly what he did today:</p>
+
+    <div class="scale-visual">
+      <div class="scale-row">
+        <div class="scale-step">ENTRY</div>
+        <div class="scale-price" style="color:var(--accent3)">$2.45</div>
+        <div class="scale-bar" style="background:var(--accent3); width:40%"></div>
+        <div class="scale-note">Bought the calls</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-step">TARGET 1</div>
+        <div class="scale-price" style="color:var(--green)">$3.00</div>
+        <div class="scale-bar" style="background:var(--green); width:55%"></div>
+        <div class="scale-note">Sold first portion (+22%)</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-step">TARGET 2</div>
+        <div class="scale-price" style="color:var(--green)">$3.45</div>
+        <div class="scale-bar" style="background:var(--green); width:65%"></div>
+        <div class="scale-note">Sold second portion (+41%)</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-step">TARGET 3</div>
+        <div class="scale-price" style="color:var(--accent)">$4.90</div>
+        <div class="scale-bar" style="background:var(--accent); width:90%"></div>
+        <div class="scale-note">Let remainder ride</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Why this works for you</div>
+      You don't have to make a perfect decision at one moment. You lock in real profit at $3.00, more at $3.45, and anything above that is "house money." You can never be 100% wrong if you've already sold some at a profit.
+    </div>
+  </div>
+
+  <div class="card red">
+    <div class="card-title">The Stop Loss — Your Safety Net</div>
+    <div class="card-subtitle">The most important rule in options trading</div>
+    <p>A stop loss is a <strong>pre-decided exit price if the trade goes against you.</strong> You set it before emotion gets involved.</p>
+    <ul>
+      <li>Ben bought NVDA calls at $2.45, stop at $2.00 → max loss = ~18%</li>
+      <li>Ben bought TSLA calls at $3.00, stop at $2.50 → max loss = ~17%</li>
+      <li>BMNR stop was "-30%" from entry price</li>
+    </ul>
+    <p>Notice a pattern? Ben usually risks <strong>15–30%</strong> of the option price on any trade. He keeps losses small so one bad trade doesn't hurt the overall account.</p>
+
+    <div class="tip-box orange">
+      <div class="tip-label">The hardest part</div>
+      When the stop hits, you sell. No hoping, no waiting "just a little longer." The TSLA trade today stopped out fast — Ben sent the alert calmly: "That drop escalated FAST." He didn't fight it. That discipline is what protects the account.
+    </div>
+  </div>
+
+  <div class="card orange">
+    <div class="card-title">Time Decay — The Hidden Clock</div>
+    <div class="card-subtitle">Why you can't hold options forever</div>
+    <p>Every option has an expiration date. As that date gets closer, the option loses value automatically — even if the stock doesn't move. This is called <strong>time decay</strong>.</p>
+    <p>Ben's NVDA trade expires <em>this Friday (May 13)</em>. That's a 2-day option. He expected a fast move — and got it. If NVDA hadn't moved, that option would have lost value every hour.</p>
+    <ul>
+      <li><strong>Short expiration</strong> (days away) = cheap, high leverage, must be right quickly</li>
+      <li><strong>Longer expiration</strong> (weeks/months) = more expensive, more time for the trade to work</li>
+    </ul>
+  </div>
+
+  <div class="card purple">
+    <div class="card-title">Trade Management — Once You're In</div>
+    <div class="card-subtitle">How to handle a 5-day options trade day by day</div>
+
+    <div class="tip-box" style="margin-bottom:20px">
+      <div class="tip-label">The Golden Rule</div>
+      Once your bracket order is set — entry, target, stop — your job is largely DONE. The bracket manages it for you. You don't need to watch every tick. Set it and step away.
+    </div>
+
+    <!-- Day by Day -->
+    <h3 style="font-size:15px; margin:0 0 12px">Day by Day — 5 Day Trade</h3>
+
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px">
+
+      <div style="background:var(--surface2); border-left:3px solid var(--green); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--green); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">DAY 1 — ENTRY DAY</div>
+        Bracket is set ✅ Check once mid-day and once at close. Is the stock still above VWAP? Still trending right direction? If yes — leave it alone. Resist the urge to tinker.
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--yellow); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--yellow); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">DAYS 2–3 — THE MIDDLE</div>
+        This is where emotion kicks in — resist it. Ask: is the thesis still intact? Stock still above key levels? Smart money still bullish? If Ben sends a correction alert — act on it immediately. If stop hasn't triggered — trust the bracket.
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent2); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">DAY 4 — URGENCY STARTS</div>
+        Time decay accelerates — your option loses value faster every hour now. If profitable but target hasn't hit → consider selling half and locking in profit. Move your stop up to at least your entry price — make the rest of the trade risk free.
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--red); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--red); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">DAY 5 — EXPIRATION DAY ⚠️</div>
+        Do NOT hold to expiration hoping for a miracle. Exit by noon CT at the latest — regardless of price. Options lose value extremely fast in the final hours. A small profit beats watching it expire worthless.
+      </div>
+
+    </div>
+
+    <!-- 3 Morning Questions -->
+    <h3 style="font-size:15px; margin:0 0 12px">3 Questions to Ask Every Morning</h3>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px">
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px">1️⃣</span> Is the stock <strong>above or below VWAP</strong> on the 5-min chart?
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px">2️⃣</span> Did Ben send any <strong>update or correction alerts</strong> overnight?
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px">3️⃣</span> Am I still <strong>profitable — and has anything changed</strong> in the market?
+      </div>
+    </div>
+    <div class="tip-box" style="margin-bottom:20px">
+      <div class="tip-label">If all three are fine</div>
+      Leave it alone and let the bracket work. Checking your position every 5 minutes does not make it go up faster — it just creates anxiety and bad decisions.
+    </div>
+
+    <!-- Two emotions -->
+    <h3 style="font-size:15px; margin:0 0 12px">The 2 Emotions That Kill Trades</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; font-size:13px">
+      <div style="background:rgba(234,179,8,0.08); border:1px solid rgba(234,179,8,0.3); border-radius:8px; padding:14px">
+        <div style="color:var(--yellow); font-weight:600; margin-bottom:6px">😤 Greed</div>
+        Target hits but you don't sell because you want more. Then it reverses and you get nothing. The bracket exists to prevent this — let it do its job.
+      </div>
+      <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:14px">
+        <div style="color:var(--red); font-weight:600; margin-bottom:6px">😰 Fear</div>
+        Option dips but is still above your stop. You sell early and miss the move. If stop hasn't triggered — the trade is still valid. Trust the plan you made before emotion got involved.
+      </div>
+    </div>
+
+    <div class="tip-box orange">
+      <div class="tip-label">Ben's words on this</div>
+      "Trades are employees. You are the boss. Give them a job with expectations. If they don't perform — FIRE THEM." That means: set the bracket, give the trade its parameters, and let it work. If stop hits — fire it and move on. No emotion.
+    </div>
+
+    <!-- Stop management -->
+    <h3 style="font-size:15px; margin:16px 0 12px">Moving Your Stop — The Trailing Stop Strategy</h3>
+    <div class="scale-visual">
+      <div class="scale-row">
+        <div class="scale-step">ENTRY</div>
+        <div class="scale-price" style="color:var(--accent3); font-size:13px">$2.45</div>
+        <div class="scale-note" style="font-size:12px">Stop at $2.00 — protecting against loss</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-step">T1 HIT</div>
+        <div class="scale-price" style="color:var(--green); font-size:13px">$3.00</div>
+        <div class="scale-note" style="font-size:12px">Move stop UP to $2.45 (entry) — now risk free!</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-step">T2 HIT</div>
+        <div class="scale-price" style="color:var(--green); font-size:13px">$3.45</div>
+        <div class="scale-note" style="font-size:12px">Move stop UP to $3.00 — locking in profit</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-step">RIDING</div>
+        <div class="scale-price" style="color:var(--accent); font-size:13px">$4.90</div>
+        <div class="scale-note" style="font-size:12px">Stop at $3.00 — worst case you still win</div>
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">🔑 The key insight</div>
+      Every time a target hits, raise your stop. This turns a trade from "I might win" into "I can't lose." By the time you're riding to Target 3, you've already locked in profit no matter what happens next. That's the power of the trailing stop.
+    </div>
+
+  </div>
+
+  <div class="card orange">
+    <div class="card-title">Order Management in IBKR</div>
+    <div class="card-subtitle">How to modify stops and targets without canceling — faster and safer</div>
+
+    <div class="tip-box" style="margin-bottom:20px">
+      <div class="tip-label">Never Cancel and Re-Enter</div>
+      Always use Modify — it keeps your bracket's OCA group intact. If you cancel and re-enter manually you could accidentally break the link between your profit target and stop loss.
+    </div>
+
+    <!-- Method 1 -->
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px">
+
+      <div style="background:var(--surface2); border-left:3px solid var(--green); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--green); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">METHOD 1 — Click & Drag on Chart (TWS Desktop) ⭐ Easiest</div>
+        Just like TradeStation! Find your stop order line directly on the chart. Click and hold it. Drag up or down to your new price. Release and confirm. Most intuitive method — exactly what you remember.
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">METHOD 2 — Right Click to Modify (TWS Desktop)</div>
+        In your open orders panel → Right click the stop order → Select <strong>"Modify Order"</strong> → Change the stop price → Click Transmit. Much faster than cancel and re-enter.
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--accent3); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent3); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">METHOD 3 — Modify on IBKR Mobile</div>
+        Go to <strong>Portfolio</strong> tab → Find your open position → Tap the order → Tap <strong>"Modify"</strong> → Change the price → Confirm. Clean and simple on the app.
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent2); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">METHOD 4 — Swipe to Edit (IBKR Mobile) ⚡ Fastest on Phone</div>
+        Go to <strong>Pending Orders</strong> → Swipe LEFT on the order → Tap <strong>Edit</strong> → Change price → Submit. Fastest method when you're on your phone during Golden Hour.
+      </div>
+
+    </div>
+
+    <!-- When to move stop -->
+    <h3 style="font-size:15px; margin:0 0 12px">When to Move Your Stop</h3>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px">
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px">✅</span> <strong>Target 1 hits</strong> → Move stop UP to your entry price → Trade is now risk free
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px">✅</span> <strong>Target 2 hits</strong> → Move stop UP to Target 1 price → Locking in profit
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px">✅</span> <strong>Day 4 arrives</strong> → Move stop up regardless — time decay accelerating
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px">✅</span> <strong>Ben sends updated stop</strong> → Modify immediately — don't wait
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:rgba(239,68,68,0.08); border-radius:8px; font-size:13px">
+        <span style="font-size:16px">❌</span> <strong>Never move stop DOWN</strong> → "Giving it more room" is how small losses become big losses
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">The Only Direction Stops Move</div>
+      Stops only ever move in ONE direction — UP on calls, DOWN on puts. You tighten your protection as the trade goes in your favor. You NEVER loosen it to avoid being stopped out. That's the discipline Ben teaches.
+    </div>
+
+    <div class="tip-box orange" style="margin-top:12px">
+      <div class="tip-label">Correction Alerts — Act Immediately</div>
+      When Ben sends a correction alert with a new stop level — open IBKR right away and modify. Use Method 4 (swipe to edit) on your phone for speed. These alerts are time sensitive — the TSLA trade showed us how fast things can move.
+    </div>
+
+  </div>
+
+</div>
+
+<!-- KEY TERMS -->
+
+<div id="terms" class="section">
+
+  <h3>Quick Reference Glossary</h3>
+  <p style="color:var(--muted); font-size:13px; margin-bottom:20px">Terms you'll hear Ben use — in plain language</p>
+
+  <div class="terms-grid">
+    <div class="term-card">
+      <div class="term-word">Strike Price</div>
+      <div class="term-def">The target price the stock needs to reach for your option to be "in the money."</div>
+      <div class="term-example">NVDA $220 calls — $220 is the strike</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">Expiration Date</div>
+      <div class="term-def">The deadline. After this date the option is worthless if the stock hasn't moved enough.</div>
+      <div class="term-example">May 13 — this Friday</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">Premium</div>
+      <div class="term-def">The price you pay for the option contract. Always multiply by 100 for real cost.</div>
+      <div class="term-example">$2.45 premium = $245 actual cost</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">Scale Out</div>
+      <div class="term-def">Selling your position in pieces at different price targets instead of all at once.</div>
+      <div class="term-example">Sold at $3.00, then $3.45, holding rest</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">Stop Loss</div>
+      <div class="term-def">A preset price where you exit the trade to limit losses. Set it before you enter.</div>
+      <div class="term-example">Stop at $2.00 on a $2.45 entry</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">Starter Position</div>
+      <div class="term-def">Buying a small portion of your intended position to test the trade before committing fully.</div>
+      <div class="term-example">DIS calls — small size, plan to add more</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">Unusual Order Flow</div>
+      <div class="term-def">Big institutional money suddenly buying options in a stock — often a signal something is coming.</div>
+      <div class="term-example">SONY 7/17 $25 calls — big buyers spotted</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">Trigger Price</div>
+      <div class="term-def">The stock price level that needs to be broken before you enter the trade.</div>
+      <div class="term-example">UBER calls — "over $76.50" is the trigger</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">In the Money (ITM)</div>
+      <div class="term-def">When the stock is already past the strike price. More expensive but higher chance of profit.</div>
+      <div class="term-example">NVDA at $225 with $220 calls = ITM</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">Out of the Money (OTM)</div>
+      <div class="term-def">When the stock hasn't reached the strike yet. Cheaper but needs a bigger move to profit.</div>
+      <div class="term-example">NVDA at $215 with $220 calls = OTM</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">Time Decay (Theta)</div>
+      <div class="term-def">Options lose value every day just from time passing, even if the stock doesn't move.</div>
+      <div class="term-example">Why Ben exits before expiration</div>
+    </div>
+    <div class="term-card">
+      <div class="term-word">34 EMA</div>
+      <div class="term-def">A moving average line on a chart. Ben uses it as a support level — stocks often bounce off it.</div>
+      <div class="term-example">BA calls pulled back to the 34 EMA</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRADE LOG -->
+
+<div id="placing" class="section">
+
+  <p style="color:var(--muted); font-size:13px; margin-bottom:24px">Step-by-step in IBKR · Using Ben's NVDA trade as the example throughout</p>
+
+  <!-- PRE-PLANNING CARD -->
+  <div class="card" style="border-left-color:var(--accent); background:rgba(0,212,170,0.03)">
+    <div class="card-title">⭐ Setting Up Trades in Advance — Ben's Method</div>
+    <div class="card-subtitle">How Ben's alerts connect to his chart prep — the complete workflow</div>
+
+    <div class="tip-box" style="margin-bottom:20px">
+      <div class="tip-label">The Big Insight from Ben's Video</div>
+      Ben's alerts aren't random. They are the OUTPUT of his chart preparation work. The Watch alert = his trigger line. The BOUGHT alert = price hit that line and he executed his pre-planned trade. The chart IS the plan. The alert IS the execution signal.
+    </div>
+
+    <!-- The 5 Step Workflow -->
+    <h3 style="font-size:15px; margin:0 0 12px">Ben's Complete Pre-Trade Workflow</h3>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px">
+
+      <div style="background:var(--surface2); border-left:3px solid var(--accent3); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent3); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">STEP 1 — Scanner Fires</div>
+        Unusual institutional flow spotted — big sweep, Above Ask, Vol > OI. Ben sees the signal and pulls up the chart to investigate.
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">STEP 2 — Chart Analysis & Line Drawing</div>
+        Ben opens the chart and draws key levels:
+        <ul style="margin-top:8px; margin-bottom:0">
+          <li><strong>Trigger line</strong> — the price where he'll enter (e.g. PLTR over $134.50)</li>
+          <li><strong>Target line</strong> — where he'll take profit</li>
+          <li><strong>Stop line</strong> — where he'll exit if wrong</li>
+          <li><strong>VWAP</strong> — is price above or below?</li>
+          <li><strong>Key support/resistance</strong> — previous highs, EMA levels</li>
+        </ul>
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--yellow); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--yellow); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">STEP 3 — Pre-Plans the Exact Trade</div>
+        Before anything happens, Ben knows EXACTLY what he'll do if price hits his trigger line:
+        <ul style="margin-top:8px; margin-bottom:0">
+          <li>Which contract (ticker, expiration, strike, call/put)</li>
+          <li>Entry price (current ask at trigger time)</li>
+          <li>Bracket: profit target + stop loss</li>
+          <li>Position size (how many contracts)</li>
+        </ul>
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent2); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">STEP 4 — Sends Watch Alert</div>
+        "Watching PLTR $137 calls over $134.50" — This IS his trigger line. He's telling subscribers: when this level breaks, I'm in. This is the moment he's prepared for.
+      </div>
+
+      <div style="background:var(--surface2); border-left:3px solid var(--green); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--green); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">STEP 5 — Price Hits → Execute → BOUGHT Alert</div>
+        Stock crosses the trigger line. Because everything is pre-planned he executes in seconds — no hesitation, no second guessing. Bracket fires immediately. "BOUGHT PLTR $137 calls at $X" — that's your signal to follow.
+      </div>
+
+    </div>
+
+    <!-- Why pre-planning matters -->
+    <div class="tip-box orange" style="margin-bottom:20px">
+      <div class="tip-label">Why This Changes Everything</div>
+      Most traders freeze when the moment comes. Should I enter? What's my stop? How many contracts? Ben has ZERO of those questions in the moment because he answered them all in advance. Pre-planning removes emotion from execution. That's why he can move so fast.
+    </div>
+
+    <!-- How to do this in IBKR -->
+    <h3 style="font-size:15px; margin:0 0 12px">How to Do This in IBKR — Your Pre-Trade Prep</h3>
+
+    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px">
+
+      <div style="display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px; flex-shrink:0">1️⃣</span>
+        <div><strong>Open the stock chart in IBKR</strong> — switch to 5-minute timeframe, make sure VWAP is on</div>
+      </div>
+
+      <div style="display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px; flex-shrink:0">2️⃣</span>
+        <div><strong>Draw your trigger line</strong> — tap the pencil/drawing icon → select Horizontal Line → drag to Ben's trigger price (e.g. $134.50 for PLTR). This is your visual reminder of where you act.</div>
+      </div>
+
+      <div style="display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px; flex-shrink:0">3️⃣</span>
+        <div><strong>Draw your target line</strong> — another horizontal line at your profit target price. Now you can SEE the trade visually — entry level and exit level right on the chart.</div>
+      </div>
+
+      <div style="display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:var(--surface2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px; flex-shrink:0">4️⃣</span>
+        <div><strong>Pre-fill your order ticket</strong> — open the options chain, find the contract, have the order ticket ready with entry price, target and stop already filled in. Just waiting to hit Submit.</div>
+      </div>
+
+      <div style="display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); border-radius:8px; font-size:13px">
+        <span style="font-size:16px; flex-shrink:0">5️⃣</span>
+        <div><strong>Watch the chart</strong> — when price crosses your trigger line with a green candle closing above it → hit Submit. Everything is ready. You're executing Ben's pre-planned trade in seconds.</div>
+      </div>
+
+    </div>
+
+    <!-- The PLTR example -->
+    <div class="anatomy" style="margin-top:8px">
+      <div class="anatomy-label">Today's PLTR example — what your prep would look like</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:8px; margin-top:12px; font-size:12px; font-family:'DM Mono',monospace">
+        <div style="background:var(--bg); border-radius:6px; padding:10px">
+          <div style="color:var(--muted); font-size:10px; margin-bottom:4px">STOCK</div>
+          <div style="font-weight:600">PLTR</div>
+        </div>
+        <div style="background:var(--bg); border-radius:6px; padding:10px">
+          <div style="color:var(--muted); font-size:10px; margin-bottom:4px">CONTRACT</div>
+          <div>May 22 $137 Calls</div>
+        </div>
+        <div style="background:var(--bg); border-radius:6px; padding:10px">
+          <div style="color:var(--yellow); font-size:10px; margin-bottom:4px">TRIGGER LINE</div>
+          <div style="color:var(--yellow)">Draw at $134.50</div>
+        </div>
+        <div style="background:var(--bg); border-radius:6px; padding:10px">
+          <div style="color:var(--accent3); font-size:10px; margin-bottom:4px">ENTRY</div>
+          <div>Current ask when $134.50 breaks</div>
+        </div>
+        <div style="background:var(--bg); border-radius:6px; padding:10px">
+          <div style="color:var(--green); font-size:10px; margin-bottom:4px">TARGET LINE</div>
+          <div style="color:var(--green)">Draw at T1 price</div>
+        </div>
+        <div style="background:var(--bg); border-radius:6px; padding:10px">
+          <div style="color:var(--red); font-size:10px; margin-bottom:4px">STOP</div>
+          <div style="color:var(--red)">-25% to -30% of entry</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">🔑 The Key Mindset Shift</div>
+      Stop thinking "I need to decide what to do when the alert comes." Start thinking "I need to have the trade fully planned BEFORE the alert comes." When Ben sends BOUGHT — you should already know exactly what to buy, at what price, and with what bracket. The alert is just the green light.
+    </div>
+
+  </div>
+    <div class="card-subtitle">Two things to confirm first</div>
+    <div class="terms-grid">
+      <div class="term-card">
+        <div class="term-word" style="color:var(--yellow)">✓ Wait for "BOUGHT"</div>
+        <div class="term-def">Ben sends a "Watch" alert first, then a "BOUGHT" alert. Only enter after you see BOUGHT — that's his confirmation the trade is real.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--yellow)">✓ Know your 3 numbers</div>
+        <div class="term-def">Before you click anything, write down: your entry price, your stop price, and your first target. For NVDA: Entry $2.45 · Stop $2.00 · Target $3.00</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card green">
+    <div class="card-title">Step 1 — Find the Stock</div>
+    <div class="card-subtitle">In IBKR Trader Workstation or IBKR Mobile</div>
+    <ul>
+      <li>Type <strong>NVDA</strong> in the search bar at the top</li>
+      <li>Select <strong>NVDA — NASDAQ</strong> from the dropdown (make sure it's the stock, not a future or fund)</li>
+      <li>You'll land on the NVDA quote page</li>
+    </ul>
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">Mobile tip</div>
+      On the IBKR app, tap the magnifying glass icon at the top right to search. Type the ticker and tap the stock result.
+    </div>
+  </div>
+
+  <div class="card green">
+    <div class="card-title">Step 2 — Open the Options Chain</div>
+    <div class="card-subtitle">This is where all available contracts live</div>
+    <ul>
+      <li>On the stock page, look for a tab or button labeled <strong>"Options"</strong> or <strong>"Option Chain"</strong></li>
+      <li>This opens a grid showing every available strike price and expiration date</li>
+      <li>It looks like a big table — don't panic. You only need two columns: <strong>Calls</strong> and the <strong>strike price</strong></li>
+    </ul>
+    <div class="anatomy" style="margin-top:16px">
+      <div class="anatomy-label">What you'll see in the chain</div>
+      <div style="display:grid; grid-template-columns: 1fr auto 1fr; gap:8px; text-align:center; font-size:13px; margin-top:8px">
+        <div style="color:var(--green); font-weight:500">CALLS side<br><span style="color:var(--muted); font-size:11px">Bet stock goes UP<br>← This is what Ben buys</span></div>
+        <div style="color:var(--accent); font-weight:500">STRIKE<br><span style="color:var(--muted); font-size:11px">$215<br>$220 ← find this<br>$225</span></div>
+        <div style="color:var(--red); font-weight:500">PUTS side<br><span style="color:var(--muted); font-size:11px">Bet stock goes DOWN<br>Ignore for now →</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card green">
+    <div class="card-title">Step 3 — Select the Expiration & Strike</div>
+    <div class="card-subtitle">Matching Ben's exact contract</div>
+    <ul>
+      <li>At the top of the chain, find and select the expiration date — <strong>May 13</strong></li>
+      <li>Scroll to find the <strong>$220 row</strong></li>
+      <li>Click or tap the <strong>Ask price</strong> on the Calls side of that row — this opens the order ticket</li>
+    </ul>
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">Ask vs Bid</div>
+      You'll see two prices: the <strong>Bid</strong> (what buyers will pay) and the <strong>Ask</strong> (what sellers want). The Ask is always slightly higher. When buying, you pay closer to the Ask. Ben's entry of $2.45 is the price he got filled at — you may get a slightly different price depending on timing.
+    </div>
+  </div>
+
+  <div class="card orange">
+    <div class="card-title">Step 4 — Fill Out the Order Ticket</div>
+    <div class="card-subtitle">The most important step — go slowly here</div>
+
+    <div class="anatomy" style="margin-top:8px">
+      <div class="anatomy-label">Order ticket fields — NVDA example</div>
+      <div class="anatomy-parts" style="margin-top:12px">
+        <div class="anatomy-part">
+          <div class="part-label">Action</div>
+          <div class="part-value" style="color:var(--green)">BUY</div>
+          <div class="part-explain">You are buying to open</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Quantity</div>
+          <div class="part-value">1</div>
+          <div class="part-explain">Start with 1 contract = 100 shares</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Order Type</div>
+          <div class="part-value" style="color:var(--accent)">BRACKET</div>
+          <div class="part-explain">Buy + profit target + stop — all in one</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Entry (Limit)</div>
+          <div class="part-value">$2.45</div>
+          <div class="part-explain">Ben's entry — adjust if market moved</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Profit Target</div>
+          <div class="part-value" style="color:var(--green)">$3.00</div>
+          <div class="part-explain">Ben's first target — sell here</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Stop Loss</div>
+          <div class="part-value" style="color:var(--red)">$2.00</div>
+          <div class="part-explain">Ben's stop — exit if wrong</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Time in Force</div>
+          <div class="part-value">DAY</div>
+          <div class="part-explain">Order cancels at end of day if not filled</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">Why a Bracket Order?</div>
+      A bracket order places all three legs — buy, profit target, and stop loss — simultaneously. The moment your buy fills, your protection is already armed. Whichever exit triggers first (profit target OR stop) automatically cancels the other. This is called OCA — One Cancels All. No gap, no scrambling, no emotion.
+    </div>
+
+    <div class="tip-box orange" style="margin-top:12px">
+      <div class="tip-label">Why LIMIT not MARKET for the entry?</div>
+      A Market order fills at whatever price is available — you could pay way more than expected. A Limit order only fills at your price or better. Always use Limit for options.
+    </div>
+  </div>
+
+  <div class="card orange">
+    <div class="card-title">Step 5 — Review and Submit</div>
+    <div class="card-subtitle">The confirmation screen before money moves</div>
+    <ul>
+      <li>IBKR will show you a preview with <strong>all 3 legs</strong> — buy, profit target, stop loss</li>
+      <li>Double check: ticker, expiration, strike, entry price, target, and stop all look right</li>
+      <li>Confirm the <strong>total cost</strong> — for 1 contract at $2.45 it should show ~$245 plus a small commission</li>
+      <li>Hit <strong>Submit</strong> or <strong>Transmit</strong> — all three orders go live together</li>
+      <li>You'll see all 3 legs in your <strong>pending orders</strong> — the buy plus both exits waiting</li>
+    </ul>
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">What it looks like after submission</div>
+      You'll see 3 linked orders: (1) Buy limit at $2.45 — working. (2) Sell limit at $3.00 — waiting. (3) Sell stop at $2.00 — waiting. Once the buy fills, legs 2 and 3 activate. When one triggers, the other cancels automatically.
+    </div>
+  </div>
+
+  <div class="card purple">
+    <div class="card-title">Step 6 — Managing the Trade After Entry</div>
+    <div class="card-subtitle">Once your bracket is live — here's what to watch for</div>
+    <p>With a bracket order working you don't need to stare at the screen. But as the trade develops you may want to:</p>
+    <ul>
+      <li><strong>Move your stop up</strong> — if the option hits $3.00 (T1) and you let some ride, raise the stop to your entry price ($2.45) so the rest is risk-free</li>
+      <li><strong>Adjust the target</strong> — if Ben sends a new target alert (like $3.45 or $4.90), you can modify the profit target leg upward</li>
+      <li><strong>Cancel and close manually</strong> — if Ben sends an "exit now" alert, you can cancel the bracket and sell at market</li>
+    </ul>
+
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">Starting out with 1 contract</div>
+      With just 1 contract you can't scale out in pieces. That's fine — set your bracket with the full contract at the first target. Get comfortable with the process first, then add size later when it feels natural.</div>
+    <p style="margin-top:12px">Then update your stop on the remaining contracts upward — if you locked in profit at $3.00, you might move your stop up to $2.45 (your entry) so the rest of the trade is risk-free.</p>
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">Starting out</div>
+      With just 1 contract it's hard to scale out in pieces. That's okay — when you're learning, it's fine to sell the whole contract at the first target. Get comfortable with the process first, then add size later.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">The Full NVDA Trade — Start to Finish</div>
+    <div class="card-subtitle">What today would have looked like if you'd followed along</div>
+    <div class="scale-visual">
+      <div class="scale-row">
+        <div class="scale-step" style="width:80px">9:42 AM</div>
+        <div class="scale-price" style="color:var(--muted); font-size:13px; width:auto; flex:1">"Watch NVDA MAY 13 $220 calls back at $2.45" → <strong style="color:var(--yellow)">Wait. Not yet.</strong></div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-step" style="width:80px">9:44 AM</div>
+        <div class="scale-price" style="color:var(--muted); font-size:13px; width:auto; flex:1">"BOUGHT NVDA May 13 $220 calls at $2.45" → <strong style="color:var(--green)">Place BRACKET order: Buy $2.45 · Target $3.00 · Stop $2.00 — all 3 legs submitted together.</strong></div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-step" style="width:80px">Later</div>
+        <div class="scale-price" style="color:var(--muted); font-size:13px; width:auto; flex:1">"Sold First scale at $3.00" → <strong style="color:var(--green)">Target leg fills automatically. Modify stop up to $2.45 (entry) — remainder now risk-free.</strong></div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-step" style="width:80px">Later</div>
+        <div class="scale-price" style="color:var(--muted); font-size:13px; width:auto; flex:1">"Sold Second scale at $3.45" → <strong style="color:var(--green)">Modify target to $3.45. Fills. Remainder rides to $4.90.</strong></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 5 STRATEGIES -->
+
+<div id="strategies" class="section">
+
+  <p style="color:var(--muted); font-size:13px; margin-bottom:8px">From Ben's Options Workshop Workbook — decoded in plain language</p>
+
+  <div class="tip-box" style="margin-bottom:24px">
+    <div class="tip-label">Ben's Core Rule — applies to ALL 5 strategies</div>
+    Know your 3 numbers BEFORE every trade: (1) Where will I get OUT if wrong? (2) Where will I TAKE PROFITS? (3) Where will I GET IN? Always in that order — risk first.
+  </div>
+
+  <!-- STRATEGY 1 -->
+  <div class="card green">
+    <div class="card-title">Strategy 1 — VWAP Pullback</div>
+    <div class="card-subtitle">Day trade the "Golden Hour" — last 2 hours of the trading day</div>
+
+    <p><strong>The big idea:</strong> Find a stock that's been strong all day, wait for it to pull back to a key support line (VWAP), and buy when it bounces. You've watched it move all day — that's your data advantage.</p>
+
+    <div class="anatomy" style="margin:16px 0">
+      <div class="anatomy-label">What is VWAP?</div>
+      <p style="font-size:13px; margin-top:8px; margin-bottom:0">Volume Weighted Average Price — the price where the <strong>most buying happened that day</strong>. Think of it as the market's "fair value" for that day. Stocks tend to bounce off it like a floor.<br><br>
+      <strong style="color:var(--green)">Above VWAP</strong> = bulls in control → look for call setups<br>
+      <strong style="color:var(--red)">Below VWAP</strong> = bears in control → be cautious with calls</p>
+    </div>
+
+    <h3 style="font-size:16px; margin:16px 0 8px">The Setup — Step by Step</h3>
+    <ul>
+      <li>Use a <strong>5-minute chart</strong> with the VWAP indicator turned on (purple line in Ben's charts)</li>
+      <li>Find a stock that was <strong>strong in the morning</strong> and held above VWAP all day</li>
+      <li>Wait for price to <strong>pull back down to VWAP</strong> in the afternoon</li>
+      <li>Buy the call option when price touches and <strong>bounces off VWAP</strong></li>
+      <li>Set stop just <strong>below VWAP</strong> — if it breaks through, you're wrong</li>
+      <li>Target: <strong>previous high of the day</strong> as first profit target</li>
+      <li>Option to use: <strong>this week or next week expiration, next strike up</strong> from current price</li>
+    </ul>
+
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">Why the Golden Hour (2–4 PM)?</div>
+      You've watched the stock move all day before making a decision. That's data. Morning trades are guesses — afternoon trades are informed. Ben strongly prefers afternoon setups for this reason.
+    </div>
+
+    <div class="anatomy" style="margin-top:16px">
+      <div class="anatomy-label">Real example — AAPL</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px; font-size:13px">
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px">
+          <div style="color:var(--muted); font-size:11px; margin-bottom:6px">BUYING SHARES</div>
+          10 shares at $250 = $2,500 risked<br>Made $50
+        </div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px">
+          <div style="color:var(--green); font-size:11px; margin-bottom:6px">BUYING OPTIONS</div>
+          10 contracts at $2.06 = $2,060<br>Sold at $3.06 — <strong style="color:var(--green)">Made $1,000 in 3 days</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRATEGY 2 -->
+  <div class="card purple">
+    <div class="card-title">Strategy 2 — SPY Rubber Band</div>
+    <div class="card-subtitle">Trade the market snapping back to its average after extreme moves</div>
+
+    <p><strong>The big idea:</strong> The market always comes back to its average (mean). When SPY stretches too far in one direction — like a rubber band pulled tight — it almost always snaps back. You trade that snap.</p>
+
+    <div class="anatomy" style="margin:16px 0">
+      <div class="anatomy-label">The tools on your chart</div>
+      <div style="font-size:13px; margin-top:10px; line-height:2">
+        <span style="color:#60a5fa">■</span> <strong>Blue line = 21 EMA</strong> — the mean (home base, where price wants to return)<br>
+        <span style="color:var(--green)">■</span> <strong>Green line = 1 ATR</strong> — normal daily range<br>
+        <span style="color:var(--yellow)">■</span> <strong>Yellow line = 2 ATR</strong> — extended, watch for exhaustion<br>
+        <span style="color:var(--red)">■</span> <strong>Red line = 3 ATR</strong> — extreme, 95%+ chance of reversal
+      </div>
+    </div>
+
+    <h3 style="font-size:16px; margin:16px 0 8px">The Setup</h3>
+    <ul>
+      <li>Watch SPY on a daily chart with the <strong>Keltner Channel</strong> indicator (set at 1, 2, and 3)</li>
+      <li>Wait for SPY to hit the <strong>3 ATR extreme level</strong> (red line) — this is rare and powerful</li>
+      <li>If SPY is at 3 ATR <strong>below</strong> the mean → buy <strong>CALLS</strong> (expecting bounce up)</li>
+      <li>If SPY is at 3 ATR <strong>above</strong> the mean → buy <strong>PUTS</strong> (expecting drop back down)</li>
+      <li>Target: price returns to the <strong>blue mean line (21 EMA)</strong></li>
+      <li>Strike: just below the mean, <strong>2 weeks out</strong> expiration</li>
+      <li>Stop: only risk <strong>25% of the option premium</strong></li>
+    </ul>
+
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">ATR = Average True Range</div>
+      How much a stock typically moves in a day. Think of stocks like sprinters — they run hard, then they REST. When SPY has sprinted 3x its normal daily range, it's exhausted and ready to rest (reverse). In the past year, SPY hit ±3 ATR only 6 times — and EVERY time it bounced back to the mean.
+    </div>
+
+    <div class="anatomy" style="margin-top:16px">
+      <div class="anatomy-label">Real example — SPY Rubber Band</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px; font-size:13px">
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px">
+          <div style="color:var(--muted); font-size:11px; margin-bottom:6px">BUYING 2 SHARES</div>
+          Bought $650 → Sold $690<br>Made $80 — same move
+        </div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px">
+          <div style="color:var(--green); font-size:11px; margin-bottom:6px">BUYING OPTIONS</div>
+          Dec 5 $670 Calls = $1,035<br><strong style="color:var(--green)">3 weeks later: $2,495 — 18x the profit</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRATEGY 3 -->
+  <div class="card yellow">
+    <div class="card-title">Strategy 3 — Market Moment (Earnings)</div>
+    <div class="card-subtitle">Trade the most predictable, scheduled event in the market</div>
+
+    <p><strong>The big idea:</strong> Earnings reports are SCHEDULED. You know exactly when a big move is coming. Ben's algorithm scores 83 data points to predict direction. This is the Earnings Edge Algo you may have seen.</p>
+
+    <div class="anatomy" style="margin:16px 0">
+      <div class="anatomy-label">3 Numbers to check on finviz.com before any earnings trade</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:10px; font-size:13px">
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center">
+          <div style="color:var(--accent); font-weight:600; margin-bottom:4px">EPS</div>
+          Earnings Per Share — did they make more than expected?
+        </div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center">
+          <div style="color:var(--accent); font-weight:600; margin-bottom:4px">Revenue</div>
+          Total sales — beat or miss?
+        </div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center">
+          <div style="color:var(--accent); font-weight:600; margin-bottom:4px">Guidance</div>
+          What does leadership say about the FUTURE? Most important.
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:16px; margin:16px 0 8px">3 Ways to Play Earnings</h3>
+    <div class="terms-grid">
+      <div class="term-card">
+        <div class="term-word" style="color:var(--yellow)">Strat 1 — Move Up Into</div>
+        <div class="term-def">Buy calls before earnings, sell before the announcement. Medium risk. Use profits as "house money" for Strat 2.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--accent2)">Strat 2 — Hold Through</div>
+        <div class="term-def">Hold the option through the earnings announcement. Highest risk/reward. Often funded by Strat 1 profits so you're playing with house money.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--green)">Strat 3 — After the Move</div>
+        <div class="term-def">If a stock breaks out big on earnings with strong sentiment, buy the continuation. Lowest risk — the move already confirmed.</div>
+      </div>
+    </div>
+
+    <div class="tip-box orange" style="margin-top:16px">
+      <div class="tip-label">VIX Rule</div>
+      If the VIX (Fear Index) is above $16, go smaller on position size. High fear = high volatility = options are expensive and moves are unpredictable. Protect yourself.
+    </div>
+  </div>
+
+  <!-- STRATEGY 4 -->
+  <div class="card orange">
+    <div class="card-title">Strategy 4 — Market Money</div>
+    <div class="card-subtitle">Follow what Wall Street is doing with their own money</div>
+
+    <p><strong>The big idea:</strong> Institutions move billions. When they make a big unusual options bet, they usually know something. Ben's scanner detects this "unusual order flow" before the crowd notices. This is what powered the SONY alert in your trade log.</p>
+
+    <h3 style="font-size:16px; margin:16px 0 8px">8 Signals the Scanner Looks For</h3>
+    <ul>
+      <li><strong>Big Volume</strong> — way more contracts traded than normal</li>
+      <li><strong>Volume > Open Interest</strong> — more bought today than total existing contracts → brand new position, pay attention</li>
+      <li><strong>Odd Lot</strong> — unusual number of contracts (not a round number)</li>
+      <li><strong>Odd Week expiration</strong> — not a standard expiration date → specific, intentional</li>
+      <li><strong>Big Premium</strong> — over $100,000 spent → someone is very serious</li>
+      <li><strong>Sweep</strong> — they bought every contract available across multiple exchanges → urgency</li>
+      <li><strong>At Ask or Above Ask</strong> — paying full price means they don't care about cost, just speed</li>
+      <li><strong>Frequency</strong> — multiple orders over time → conviction, not a one-off</li>
+    </ul>
+
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">The Process</div>
+      Find smart money activity → look for chart confirmation → wait for PRICE to confirm (price is the only truth) → make a plan → manage the trade. Smart money alone isn't enough — price must confirm.
+    </div>
+  </div>
+
+  <!-- STRATEGY 5 -->
+  <div class="card">
+    <div class="card-title">Strategy 5 — Market Math</div>
+    <div class="card-subtitle">When 3 types of math align — the highest probability setups exist</div>
+
+    <p><strong>The big idea:</strong> When historical patterns, volume data, AND cheap options all point to the same move at the same time — that's a rare, high-conviction opportunity.</p>
+
+    <div class="terms-grid" style="margin:16px 0">
+      <div class="term-card">
+        <div class="term-word" style="color:var(--accent)">1. Historical Math</div>
+        <div class="term-def">Charts repeat because humans repeat. The same patterns play out over and over. You're betting on human psychology, not just price.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--accent)">2. Volume Math</div>
+        <div class="term-def">Find the Point of Control (POC) — the price level where the most volume traded. When price compresses near POC, a big move is building. The more volume, the bigger the eventual move.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--accent)">3. Options Math</div>
+        <div class="term-def">When volatility drops and options get cheap — but a big move is historically due — that's when options are "on sale." You're buying a cheap lottery ticket with real math behind it.</div>
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:8px">
+      <div class="tip-label">When all 3 align — the risk/reward math is extraordinary</div>
+      If wrong: you only lose the option premium (small). If right: 5x, 10x, 15x return. The TSLA case study: bought $12.50 contracts, sold at $100 = $131,250 profit on $18,750 risked — because all 4 signals aligned.
+    </div>
+  </div>
+
+  <!-- HEAD HANDS HEART -->
+  <div class="card red">
+    <div class="card-title">The Foundation — Head, Hands, Heart</div>
+    <div class="card-subtitle">Ben's framework for becoming a complete trader</div>
+    <div class="terms-grid">
+      <div class="term-card">
+        <div class="term-word" style="color:var(--accent3)">HEAD — Know the Markets</div>
+        <div class="term-def">Understand WHAT moves markets and why. The 5 strategies. Reading charts. Understanding the data.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--accent3)">HANDS — Execute</div>
+        <div class="term-def">Know HOW to place trades and manage positions. This is what we're building in your Placing a Trade tab.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--accent3)">HEART — Master Emotions</div>
+        <div class="term-def">Deal with WHY you react the way you do. Fear, greed, hesitation. "Trading is not a battle with the market — it is a battle within yourself."</div>
+      </div>
+    </div>
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">Ben's H.A.L.T. Rule — check yourself before trading</div>
+      Don't trade if you're <strong>H</strong>ungry, <strong>A</strong>ngry, <strong>L</strong>onely, or <strong>T</strong>ired. Any of these states cause emotional decisions. The market will take your money when you're not centered.
+    </div>
+  </div>
+
+</div>
+
+<!-- CHEAT SHEET -->
+
+<div id="cheatsheet" class="section">
+
+  <p style="color:var(--muted); font-size:13px; margin-bottom:24px">The essentials — everything you need to know before placing a trade</p>
+
+  <div class="card green">
+    <div class="card-title">What Is an Options Contract?</div>
+    <div class="card-subtitle">One sentence version</div>
+    <p>A bet that a stock will reach a certain price by a certain date. <strong>One contract = 100 shares.</strong></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Reading the Contract Name</div>
+    <div class="card-subtitle">Every piece tells you something</div>
+    <div class="anatomy" style="margin-top:8px">
+      <div class="anatomy-label">Example contract</div>
+      <div class="anatomy-trade">QRVO &nbsp; May 15 2026 &nbsp; $175 &nbsp; Call</div>
+      <div class="anatomy-parts">
+        <div class="anatomy-part">
+          <div class="part-label">QRVO</div>
+          <div class="part-value">The Stock</div>
+          <div class="part-explain">Qorvo — the company you're betting on</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">May 15 2026</div>
+          <div class="part-value">Expiration</div>
+          <div class="part-explain">Last day to sell — worthless after this</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">$175</div>
+          <div class="part-value">Strike Price</div>
+          <div class="part-explain">Price stock needs to reach</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">Call</div>
+          <div class="part-value">Direction</div>
+          <div class="part-explain">Betting the stock goes UP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card orange">
+    <div class="card-title">What Does It Actually Cost?</div>
+    <div class="card-subtitle">Always multiply by 100</div>
+    <div class="anatomy" style="margin-top:8px">
+      <div class="anatomy-label">The math</div>
+      <p style="font-size:15px; margin-top:10px; margin-bottom:0">Contract price <strong>×</strong> 100 = your actual cost<br><br>
+      Example: <strong style="color:var(--accent)">$0.45 × 100 = $45 per contract</strong><br>
+      Example: <strong style="color:var(--accent)">$2.45 × 100 = $245 per contract</strong></p>
+    </div>
+  </div>
+
+  <div class="card red">
+    <div class="card-title">⚠️ The #1 Rule — Strike Distance</div>
+    <div class="card-subtitle">Check this BEFORE anything else</div>
+    <p>The stock needs to reach the strike price for your bet to work. <strong>The closer the stock is to the strike, the better.</strong></p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; font-size:13px">
+      <div style="background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); border-radius:8px; padding:14px">
+        <div style="color:var(--green); font-weight:600; margin-bottom:8px">✅ GOOD — Close to strike</div>
+        AMPX at $18.83<br>Strike: $19.00<br>
+        <strong style="color:var(--green)">Only $0.17 away</strong>
+      </div>
+      <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:14px">
+        <div style="color:var(--red); font-weight:600; margin-bottom:8px">❌ BAD — Far from strike</div>
+        QRVO at $93.00<br>Strike: $175.00<br>
+        <strong style="color:var(--red)">$82 away — very unlikely</strong>
+      </div>
+    </div>
+    <div class="tip-box orange">
+      <div class="tip-label">Key rule</div>
+      Big premium alone isn't enough — always check how close the stock is to the strike price FIRST.
+    </div>
+  </div>
+
+  <div class="card purple">
+    <div class="card-title">Reading the Scanner</div>
+    <div class="card-subtitle">What the colors mean at a glance</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; font-size:13px">
+      <div style="background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); border-radius:8px; padding:14px">
+        <div style="color:var(--green); font-size:18px; font-weight:700; margin-bottom:6px">🟢 GREEN price</div>
+        Contract gaining value since the big trade was placed. Good sign — smart money is winning so far.
+      </div>
+      <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:14px">
+        <div style="color:var(--red); font-size:18px; font-weight:700; margin-bottom:6px">🔴 RED price</div>
+        Contract losing value since the big trade. Caution — smart money is currently underwater.
+      </div>
+    </div>
+    <p>Higher premium = bigger bet = more conviction from the smart money buyer.</p>
+    <div class="tip-box" style="margin-top:12px">
+      <div class="tip-label">Look for both together</div>
+      Green price + strike close to current stock price = the strongest signal to pay attention.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Selling the Contract</div>
+    <div class="card-subtitle">You don't have to wait until expiration</div>
+    <ul>
+      <li>You can <strong>sell anytime</strong> the market is open before expiration</li>
+      <li>Most of Ben's short-term trades are <strong>same day or next day</strong></li>
+      <li>Set a <strong>bracket order in IBKR</strong> = automatic profit target + stop loss in one step</li>
+      <li><strong>Don't hold to expiration</strong> unless you actually want to buy 100 shares of the stock</li>
+    </ul>
+  </div>
+
+  <div class="card green">
+    <div class="card-title">Pre-Trade Checklist</div>
+    <div class="card-subtitle">Run through this before every single trade</div>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px">
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:14px">
+        <span style="font-size:18px">1️⃣</span> Wait for Ben's <strong>"BOUGHT"</strong> alert — not just "Watch"
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:14px">
+        <span style="font-size:18px">2️⃣</span> Check <strong>strike distance</strong> — is the stock close to the strike?
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:14px">
+        <span style="font-size:18px">3️⃣</span> Know your <strong>3 numbers</strong> — entry, stop, target
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:14px">
+        <span style="font-size:18px">4️⃣</span> Use a <strong>Limit order</strong> — never Market
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:14px">
+        <span style="font-size:18px">5️⃣</span> Set your <strong>stop loss immediately</strong> after fill
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:14px">
+        <span style="font-size:18px">6️⃣</span> Check <strong>H.A.L.T.</strong> — Hungry? Angry? Lonely? Tired?
+      </div>
+    </div>
+  </div>
+
+  <div class="card purple">
+    <div class="card-title">Reading the IBKR Options Chain</div>
+    <div class="card-subtitle">Decoded using your real NVDA screenshot — May 18 expiration</div>
+
+    <p>When you open the options chain for any stock in IBKR, here's exactly what you're looking at:</p>
+
+    <div class="anatomy" style="margin:16px 0">
+      <div class="anatomy-label">Step 1 — The expiration tabs at the top</div>
+      <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap">
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:8px 14px; font-family:'DM Mono',monospace; font-size:12px; text-align:center">
+          <div style="color:var(--muted)">May 13</div><div style="color:var(--muted); font-size:10px">0 Days</div>
+        </div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:8px 14px; font-family:'DM Mono',monospace; font-size:12px; text-align:center">
+          <div style="color:var(--muted)">May 15</div><div style="color:var(--muted); font-size:10px">2 Days</div>
+        </div>
+        <div style="background:var(--accent); border:1px solid var(--accent); border-radius:6px; padding:8px 14px; font-family:'DM Mono',monospace; font-size:12px; text-align:center">
+          <div style="color:var(--bg); font-weight:600">May 18 ✓</div><div style="color:var(--bg); font-size:10px">5 Days — Selected</div>
+        </div>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:8px 14px; font-family:'DM Mono',monospace; font-size:12px; text-align:center">
+          <div style="color:var(--muted)">May 22</div><div style="color:var(--muted); font-size:10px">9 Days</div>
+        </div>
+      </div>
+      <p style="font-size:13px; margin-top:10px; margin-bottom:0">Tap the expiration that matches Ben's alert. If he says "May 18 $225 calls" — tap May 18 first.</p>
+    </div>
+
+    <div class="anatomy" style="margin:16px 0">
+      <div class="anatomy-label">Step 2 — The black line through the middle</div>
+      <p style="font-size:13px; margin-top:8px; margin-bottom:8px">That bold line at <strong>224.59</strong> is the current stock price — your dividing line:</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px">
+        <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); border-radius:6px; padding:12px">
+          <div style="color:var(--green); font-weight:600; margin-bottom:4px">Above the line</div>
+          $225, $227.50, $230...<br><strong>Out of the Money (OTM)</strong><br>
+          <span style="color:var(--muted); font-size:11px">Cheaper · needs bigger move</span>
+        </div>
+        <div style="background:rgba(123,97,255,0.08); border:1px solid rgba(123,97,255,0.2); border-radius:6px; padding:12px">
+          <div style="color:var(--accent3); font-weight:600; margin-bottom:4px">Below the line</div>
+          $220, $217.50...<br><strong>In the Money (ITM)</strong><br>
+          <span style="color:var(--muted); font-size:11px">More expensive · already profitable</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="anatomy" style="margin:16px 0">
+      <div class="anatomy-label">Step 3 — Reading a row — NVDA $220 strike</div>
+      <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:8px; margin-top:12px; font-size:13px; text-align:center">
+        <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); border-radius:8px; padding:12px">
+          <div style="color:var(--green); font-size:11px; font-family:'DM Mono',monospace; margin-bottom:8px">CALLS — stock goes UP</div>
+          <div>Bid <strong>4.90</strong></div>
+          <div>Ask <strong style="color:var(--accent)">5.00</strong> ← you pay this</div>
+          <div>Last <strong>C4.96</strong></div>
+          <div style="margin-top:8px; color:var(--green); font-size:12px">Cost: $500/contract</div>
+        </div>
+        <div style="display:flex; align-items:center">
+          <div style="background:var(--accent); color:var(--bg); border-radius:6px; padding:8px 10px; font-family:'Bebas Neue',sans-serif; font-size:20px; text-align:center">220<br><span style="font-size:10px; font-family:'DM Mono',sans-serif">STRIKE</span></div>
+        </div>
+        <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:8px; padding:12px">
+          <div style="color:var(--red); font-size:11px; font-family:'DM Mono',monospace; margin-bottom:8px">PUTS — stock goes DOWN</div>
+          <div>Bid <strong>3.95</strong></div>
+          <div>Ask <strong>4.05</strong></div>
+          <div>Last <strong>C4.00</strong></div>
+          <div style="margin-top:8px; color:var(--muted); font-size:12px">Ignore for now</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="anatomy" style="margin:16px 0">
+      <div class="anatomy-label">Step 4 — The other numbers on your screen</div>
+      <div class="anatomy-parts" style="margin-top:12px">
+        <div class="anatomy-part">
+          <div class="part-label">IV Last 45.7%</div>
+          <div class="part-value" style="font-size:13px">Implied Vol</div>
+          <div class="part-explain">How much movement expected. Higher = pricier options.</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">52W IV Rank 60</div>
+          <div class="part-value" style="font-size:13px">IV Rank</div>
+          <div class="part-explain">Options cost vs past year. Above 50 = relatively expensive.</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">OPT VLM 3.62M</div>
+          <div class="part-value" style="font-size:13px">Volume</div>
+          <div class="part-explain">Contracts traded today. High = liquid, easy to enter/exit.</div>
+        </div>
+        <div class="anatomy-part">
+          <div class="part-label">344 / 5 (small numbers)</div>
+          <div class="part-value" style="font-size:13px">Open Interest</div>
+          <div class="part-explain">Total open contracts. Vol > OI = big new money moving in.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Which strike would Ben pick from your screenshot?</div>
+      NVDA at $224.59 → <strong>$225 Call at $2.83 Ask</strong> is only $0.41 away. Sweet spot — close to the money, $283/contract, 5 days. That's exactly Ben's style.
+    </div>
+
+    <div class="tip-box orange" style="margin-top:12px">
+      <div class="tip-label">Bid vs Ask — which do you pay?</div>
+      Buying → pay the <strong>Ask</strong>. Selling → receive the <strong>Bid</strong>. The gap between them is the spread. On NVDA it's tiny ($0.10) — why Ben loves liquid names.
+    </div>
+  </div>
+
+</div>
+
+<!-- SCANNER LAB -->
+
+
+<!-- OMEN HANDBOOK -->
+<div id="omenhandbook" class="section">
+
+  <p style="color:var(--muted); font-size:13px; margin-bottom:8px">From The Omen Trader's Handbook · Ben Sturgill · Smart Data Trading · Key concepts decoded</p>
+
+  <div class="tip-box" style="margin-bottom:20px">
+    <div class="tip-label">Ben's Core Philosophy — In His Own Words</div>
+    "I'm not just looking for ONE reason to get in. I dig deeper. I'm looking for BIG trades that tell me smart money is behind those orders. Once I've figured out where the smart money is laying out their bets — I simply try to follow them into the same trade."
+  </div>
+
+  <!-- WHY IT'S LEGAL -->
+  <div class="card green">
+    <div class="card-title">Why Following Smart Money Is Legal</div>
+    <div class="card-subtitle">The foundation that makes the Omen Scanner possible</div>
+    <p>Every options trade placed anywhere in the US must be reported to <strong>OPRA</strong> — the Options Price Reporting Authority. It's ALL public information by law. Ben just built tools to find it and decipher what it means faster than anyone else.</p>
+    <div class="tip-box" style="margin-top:12px">
+      <div class="tip-label">The edge isn't insider information</div>
+      The edge is SPEED and INTERPRETATION. The data is public — but 99% of traders don't have the tools to find the meaningful signals in real time. That's what the Omen Scanner does. That's your edge.
+    </div>
+  </div>
+
+  <!-- STEALTH SWEEP EXPLAINED -->
+  <div class="card orange">
+    <div class="card-title">What Is a Stealth Sweep — Ben's Definition</div>
+    <div class="card-subtitle">Straight from the handbook</div>
+    <p>A Stealth Sweep is a large and aggressive options order. When calls are aggressively bought it's bullish. When puts are aggressively bought it's bearish.</p>
+    <p style="margin-top:10px">Multiple exchanges compete for a trader's business. If a trader Stealth Sweeps, they lift all the offers on multiple exchanges to get filled on their desired contract size.</p>
+
+    <div class="anatomy" style="margin:16px 0">
+      <div class="anatomy-label">Real example from the handbook</div>
+      <p style="font-size:13px; margin-top:8px; margin-bottom:0">754 contracts offered at $0.45 across 9 exchanges. To fill all 754, the trader sweeps all exchanges: 271 from PHLX, 174 from CBOE, 117 from ISE... etc. Regular software shows 9 separate orders. The Omen Scanner identifies it as ONE massive order. That's the technology edge.</p>
+    </div>
+
+    <div class="tip-box orange" style="margin-top:8px">
+      <div class="tip-label">Why this matters to you</div>
+      When you see "Sweep Detected" in the scanner — that's NOT a normal retail order. That's a whale taking everything available as fast as possible. They don't care about the price. They care about SIZE and SPEED. That urgency is the signal.
+    </div>
+  </div>
+
+  <!-- THE 4 SIGNS OF AN AGGRESSIVE ORDER -->
+  <div class="card" style="border-left-color:var(--accent2)">
+    <div class="card-title" style="color:var(--accent2)">⚡ Ben's 4 Signs of an Aggressive Order</div>
+    <div class="card-subtitle">His official checklist — all 4 together = maximum conviction</div>
+
+    <div style="display:flex; flex-direction:column; gap:10px; margin:16px 0">
+      <div style="background:var(--surface2); border-left:3px solid var(--green); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--green); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">SIGN 1 — Is it a SWEEP?</div>
+        They came in and took as much as they could across all exchanges simultaneously. Not a patient limit order — an aggressive market order at scale. Maximum urgency.
+      </div>
+      <div style="background:var(--surface2); border-left:3px solid var(--accent2); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent2); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">SIGN 2 — Is it ABOVE ASK?</div>
+        They paid MORE than the asking price. They didn't negotiate. They didn't wait. They said "give me everything right now at any price." That's the strongest urgency signal possible.
+      </div>
+      <div style="background:var(--surface2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">SIGN 3 — Large MONETARY SIZE?</div>
+        Big premium — $100K, $500K, $1M+. Small retail traders don't spend this. This is institutional money — hedge funds, market makers, insiders. Big money = big conviction.
+      </div>
+      <div style="background:var(--surface2); border-left:3px solid var(--accent3); border-radius:0 8px 8px 0; padding:14px; font-size:13px">
+        <div style="color:var(--accent3); font-weight:600; font-family:'DM Mono',monospace; font-size:12px; margin-bottom:6px">SIGN 4 — Short Dated CONTRACT?</div>
+        Near-term expiration means they expect the move SOON — not in 6 months. They're not hedging long term. They're betting on a specific near-term catalyst. Urgency of time compounds the signal.
+      </div>
+    </div>
+
+    <div style="background:rgba(255,107,53,0.08); border:2px solid rgba(255,107,53,0.4); border-radius:8px; padding:16px; text-align:center; margin-top:8px">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--accent2); letter-spacing:0.06em; margin-bottom:6px">All 4 Together = Maximum Aggression</div>
+      <p style="font-size:13px; color:var(--text)">Sweep + Above Ask + Large Premium + Short Dated = someone is betting BIG on a FAST move. This is what Ben calls "putting these 4 things together creates a very aggressive order, and should be looked at carefully."</p>
+    </div>
+
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">Today's GLD signal through this lens</div>
+      Sweep ✅ + At Ask ✅ + $1.28M ✅ + May 22 (7 days) ✅ = All 4 signs. That's why it was a 7/7 checklist signal. Ben's own criteria confirmed.
+    </div>
+  </div>
+
+  <!-- TWO BEST TIMES -->
+  <div class="card purple">
+    <div class="card-title">The Two Best Times to Scan</div>
+    <div class="card-subtitle">Directly from Ben — "this is when people sneak in trades"</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; font-size:13px">
+      <div style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.3); border-radius:8px; padding:14px">
+        <div style="color:var(--green); font-weight:600; margin-bottom:8px; font-family:'DM Mono',monospace; font-size:12px">🔔 FIRST HOUR · 9:30–10:30 AM CT</div>
+        Institutions sneak in trades at the open. The scanner shows the most aggressive activity. Big orders Above Ask in the first 10 minutes = someone positioning for a same-day or next-day move.<br><br>
+        <div style="color:var(--muted); font-size:11px">Today's example: NVDA, NFLX, MSFT, TSLA, GLD all fired in the first 10 minutes</div>
+      </div>
+      <div style="background:rgba(123,97,255,0.08); border:1px solid rgba(123,97,255,0.3); border-radius:8px; padding:14px">
+        <div style="color:var(--accent3); font-weight:600; margin-bottom:8px; font-family:'DM Mono',monospace; font-size:12px">🌙 LAST HOUR · 3:00–4:00 PM CT</div>
+        People put in big trades right before close "because they know something." NKE example: $40K dropped on calls in last 10 minutes — next day opened in the money. These are often earnings or news catalyst plays.<br><br>
+        <div style="color:var(--muted); font-size:11px">This is also Ben's Golden Hour for VWAP setups — two reasons to be active 1-4 PM</div>
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:8px">
+      <div class="tip-label">Updated Daily Routine Insight</div>
+      First scan at open (9:30 AM) + Golden Hour scan (1-3 PM) + Last hour scan (3-4 PM) = three key windows. You're already doing the first two. Consider adding a quick scan at 3 PM to catch any pre-close positioning.
+    </div>
+  </div>
+
+  <!-- EARNINGS PLAYS -->
+  <div class="card yellow">
+    <div class="card-title">Using the Scanner for Earnings</div>
+    <div class="card-subtitle">Ben's second key use case</div>
+    <p>Watch for large sweeps Above Ask in the days BEFORE earnings. Institutional money often positions ahead of earnings reports — they're betting on the direction before the announcement.</p>
+
+    <div class="anatomy" style="margin:16px 0">
+      <div class="anatomy-label">NKE real example from handbook</div>
+      <p style="font-size:13px; margin-top:8px; margin-bottom:0">Days leading up to NKE earnings — no big sweeps. Then the day BEFORE earnings — Boom. $429K on short-dated $91 calls at Ask in the last 10 minutes of trading. NKE was below $90. Someone knew. Next day NKE opened in the money. The person who followed that trade made 300%.</p>
+    </div>
+
+    <div class="tip-box orange" style="margin-top:8px">
+      <div class="tip-label">The key pattern</div>
+      No activity for days → sudden large sweep Above Ask on short-dated strike → earnings next day = someone knows something. Ben says "we can get some sense of what someone is trying to do, but will never know 100%." You don't need to know why — you just need to see the money move.
+    </div>
+  </div>
+
+  <!-- BEN'S WIN RATE CONTEXT -->
+  <div class="card">
+    <div class="card-title">Ben's Track Record Context</div>
+    <div class="card-subtitle">What the handbook reveals about his system</div>
+    <div class="terms-grid">
+      <div class="term-card">
+        <div class="term-word" style="color:var(--green)">88.46% Win Rate</div>
+        <div class="term-def">First half of 2023 using this exact strategy. High win rate comes from being selective — not trading every signal, only the highest conviction setups.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--green)">122% on NVDA · 4 days</div>
+        <div class="term-def">Institutional sweep spotted → followed the money → sold when target hit. Simple process, exceptional result.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--green)">346% on PLTR · 10 days</div>
+        <div class="term-def">PLTR is on TODAY'S watchlist. Same name, same process. Pattern recognition in action.</div>
+      </div>
+      <div class="term-card">
+        <div class="term-word" style="color:var(--accent)">$1,100 → $3,370 on GOOGL</div>
+        <div class="term-def">Stock moved $110 to $127. Shares made $170. Options made $2,270 extra on the same move. That's the leverage advantage.</div>
+      </div>
+    </div>
+    <div class="tip-box" style="margin-top:16px">
+      <div class="tip-label">Why his bar is so high</div>
+      Ben's win rate is high BECAUSE he doesn't trade everything. He waits for multiple signals to stack. He's not an action junkie. Patience + selectivity + discipline = the real edge. That's exactly what you're building right now.
+    </div>
+  </div>
+
+</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title-text">Edit Trade</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="field"><label>Ticker</label><input id="f-ticker" type="text" placeholder="GOOG"></div>
+      <div class="field"><label>Status</label>
+        <select id="f-status">
+          <option value="active">🟠 Active</option>
+          <option value="win">✅ Win</option>
+          <option value="loss">✗ Loss</option>
+          <option value="watching">👀 Watching</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Contract</label><input id="f-contract" type="text" placeholder="Jun 18 $380 Call"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="field"><label>Date</label><input id="f-date" type="date"></div>
+      <div class="field"><label>Source</label><input id="f-source" type="text" placeholder="B Sturg"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+      <div class="field"><label>Entry $</label><input id="f-entry" type="number" step="0.01"></div>
+      <div class="field"><label>Stop $</label><input id="f-stop" type="number" step="0.01"></div>
+      <div class="field"><label>T1 $</label><input id="f-t1" type="number" step="0.01"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="field"><label>Cost $</label><input id="f-cost" type="number"></div>
+      <div class="field"><label>Result $</label><input id="f-result" type="number"></div>
+    </div>
+    <div class="field"><label>Notes</label><textarea id="f-notes" placeholder="What happened, lessons learned..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveEdit()">SAVE</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ===== TOP PANEL SWITCHER =====
+function showPanel(id) {
+  document.querySelectorAll('.main-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.top-tab').forEach((b,i) => {
+    const ids = ['dashboard','charts','playbook'];
+    b.classList.toggle('active', ids[i]===id);
+  });
+  document.getElementById(id+'-panel').classList.add('active');
+}
+
+// ===== PLAYBOOK TAB SWITCHER =====
+function showSection(id) {
+  document.querySelectorAll('.pb-wrap .section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.pb-wrap .nav-tab').forEach(t => t.classList.remove('active'));
+  const sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
+}
+
+const API_KEY = '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';
+const KEYS = { trades:'merle-trades-v1', watchlist:'merle-watchlist-v1', chat:'merle-chat-v1' };
+
+function lsLoad(key) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; }
+  catch { return null; }
+}
+function lsSave(key, data) {
+  try { localStorage.setItem(key, JSON.stringify(data)); }
+  catch(e) { console.error('Storage error', e); }
+}
+
+const SEED_TRADES = [
+  { id:'pltr-001', date:'2026-05-18', ticker:'PLTR', contract:'May 22 $137 Calls', source:'Ethan Harms', status:'loss', entry:2.58, stop:1.81, t1:5.16, cost:258, result:-77, resultPct:-30, notes:'Trade #1. Market order on phone — bad fill at $2.58. Ben passed on PLTR, missing BOUGHT confirmation. Stopped out automatically. Lessons: wait for BOUGHT, use desktop, bracket works.', confirmations:['Scanner signal ✅','VWAP reclaim ✅','Ben BOUGHT ❌ — MISSING','Desktop execution ❌ — phone used'], footnote:'' },
+  { id:'amzn-002', date:'2026-05-19', ticker:'AMZN', contract:'Jul 17 $290 Calls', source:'B Sturg', status:'win', entry:3.40, stop:2.38, t1:4.76, cost:340, result:136, resultPct:40, notes:'Trade #2. All 7 confirmations met. Ben BOUGHT at 9:43 AM CT. Demand zone $255–$257 held. AMZN reclaimed VWAP. SPY above VWAP. Desktop execution, clean limit fill at $3.40. GTC bracket fired automatically at T1 while driving to office!', confirmations:['Ben BOUGHT alert ✅','Demand zone $255–$257 held ✅','AMZN reclaimed VWAP ✅','SPY above VWAP ✅','Desktop execution ✅','GTC bracket armed ✅','Jul 17 expiry — 59 days ✅'], footnote:'Options vs Stock at T1 ($4.76): Options $340 in → $476 out = +$136 (+40%). Stock would need $25,900 for 100 shares, same move = +$350 (+1.3%). Options used 76x less capital. That\'s leverage.' },
+  { id:'intc-003', date:'2026-06-12', ticker:'INTC', contract:'Jun 26 $140 Call', source:'B Sturg', status:'win', entry:3.96, stop:3.20, t1:4.80, cost:396, result:84, resultPct:21, notes:'Entered Fri Jun 12. Better fill than Ben ($3.96 vs $4.00). T1 hit at open Mon Jun 15. Friday rule followed — fresh Monday confirmation before letting bracket work. GTC bracket armed, clean.', confirmations:['B Sturg BOUGHT alert ✅','Score 6 scanner flow ✅','Desktop execution ✅','Bracket armed GTC ✅','Friday rule followed ✅'], footnote:'' },
+  { id:'goog-004', date:'2026-06-15', ticker:'GOOG', contract:'Jun 18 $380 Call', source:'B Sturg Watch + Scanner', status:'loss', entry:1.40, stop:1.12, t1:2.24, cost:140, result:-28, resultPct:-20, notes:'Score 7 scanner flow + Ben Watch alert. Great fill at $1.40 (limit $1.45). GOOG could not hold $370. Stop bracket executed cleanly at $1.12. No rule breaks — system worked as designed.', confirmations:['Score 7 scanner ✅','Ben Watch alert ✅','Bracket armed immediately ✅','Stop direction rule followed ✅'], footnote:'' },
+];
+
+const SEED_WATCHLIST = [
+  { id:'nke-w1', ticker:'NKE', contract:'Jun 18 $46 Call', trigger:42.85, current:42.50, status:'triggered', notes:'Triggered 5/19 — close to entry' },
+  { id:'uber-w2', ticker:'UBER', contract:'May 22 $77 Call', trigger:76.50, current:74.00, status:'triggered', notes:'Expires soon — time sensitive' },
+  { id:'pypl-w3', ticker:'PYPL', contract:'May 22 $47.50 Call', trigger:45.75, current:43.95, status:'triggered', notes:'Expires soon — time sensitive' },
+  { id:'dal-w4', ticker:'DAL', contract:'May 29 $74 Call', trigger:72.50, current:68.65, status:'triggered', notes:'Triggered 5/18' },
+  { id:'dis-w5', ticker:'DIS', contract:'Jul 17 $110 Call', trigger:105.00, current:102.40, status:'pending', notes:'Pending — below trigger' },
+  { id:'nxe-w6', ticker:'NXE', contract:'Jun 18 $13 Call', trigger:12.60, current:10.70, status:'pending', notes:'Uranium/nuclear' },
+  { id:'nok-w7', ticker:'NOK', contract:'Jun 18 $15.50 Call', trigger:14.10, current:13.91, status:'pending', notes:'Ethan watchlist 5/20 — close to trigger' },
+  { id:'f-w8', ticker:'F', contract:'Jul 17 $15 Call', trigger:13.40, current:13.12, status:'pending', notes:'Ford — Ethan watchlist 5/20, Score 7 flow earlier this week' },
+  { id:'purr-w9', ticker:'PURR', contract:'Jun 18 $9 Call', trigger:8.20, current:8.06, status:'pending', notes:'Ethan watchlist 5/20 — right at trigger, watch closely' },
+  { id:'zeta-w10', ticker:'ZETA', contract:'Jun 18 $19.50 Call', trigger:18.80, current:18.13, status:'pending', notes:'Ethan watchlist 5/20 — Ethan flagged sweep yesterday too' },
+];
+
+const SEED_CHAT = [{ role:'assistant', content:'👋 GM Merle! I\'m your standalone AI trading assistant — no Claude needed!\n\nI\'m wired directly into your Dashboard. Just talk to me:\n• "Ben bought AMZN $290 calls at $3.40"\n• "AMZN hit T1 — close it as a win"\n• "Update my stop to $2.80"\n• "Add NKE to watchlist, trigger $43"\n\nI\'ll log everything instantly. 🎯', ts: new Date().toISOString() }];
+
+let trades = lsLoad(KEYS.trades) || SEED_TRADES;
+let watchlist = lsLoad(KEYS.watchlist) || SEED_WATCHLIST;
+let chatHistory = lsLoad(KEYS.chat) || SEED_CHAT;
+let currentFilter = 'all';
+let editingId = null;
+let aiLoading = false;
+let expandedCards = new Set(trades.filter(t=>t.status==='active').map(t=>t.id));
+
+const STATUS_CFG = {
+  active:   { label:'🟠 Active',   color:'#ff6b35', bg:'rgba(255,107,53,0.15)',  border:'rgba(255,107,53,0.3)' },
+  win:      { label:'✅ Win',      color:'#22c55e', bg:'rgba(34,197,94,0.12)',   border:'rgba(34,197,94,0.3)' },
+  loss:     { label:'✗ Loss',      color:'#ef4444', bg:'rgba(239,68,68,0.12)',   border:'rgba(239,68,68,0.3)' },
+  watching: { label:'👀 Watching', color:'#00d4aa', bg:'rgba(0,212,170,0.10)',   border:'rgba(0,212,170,0.25)' },
+  watchlist:{ label:'📋 Ref',      color:'#9ca3af', bg:'rgba(107,114,128,0.10)', border:'rgba(107,114,128,0.2)' },
+};
+
+function persist() {
+  document.getElementById('saving-indicator').style.display='inline';
+  lsSave(KEYS.trades, trades);
+  lsSave(KEYS.watchlist, watchlist);
+  setTimeout(()=>{ document.getElementById('saving-indicator').style.display='none'; }, 800);
+}
+function persistChat() { lsSave(KEYS.chat, chatHistory); }
+
+function toast(msg, type='success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = type==='error' ? '#ef4444' : '#00d4aa';
+  el.style.color = '#0d0f14';
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2800);
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showTab(id) {
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{
+    const ids=['scan','ai','log','watchlist','routine','rules'];
+    b.classList.toggle('active', ids[i]===id);
+  });
+  const aiTab = document.getElementById('ai-tab');
+  const tabs = ['scan','log','watchlist','routine','rules'];
+  aiTab.classList.toggle('active', id==='ai');
+  aiTab.style.display = id==='ai' ? 'flex' : 'none';
+  tabs.forEach(t=>{
+    document.getElementById(t+'-tab').classList.toggle('active', t===id);
+  });
+  if (id==='log') renderTradeLog();
+  if (id==='watchlist') renderWatchlist();
+  if (id==='scan') renderScanFlags();
+}
+
+// ===== SCAN CHECKLIST SCORING =====
+const SCAN_FLAGS = [
+  { id:'donkey', label:'🦍 DonkeyKong Flag', pts:1 },
+  { id:'repeater', label:'🔁 Repeater_Bullish Flag', pts:1 },
+  { id:'allthings', label:'⚡ AllTheThings Flag', pts:1 },
+  { id:'vwap', label:'📈 Stock above VWAP on 5-min', pts:1 },
+  { id:'spy', label:'🌊 SPY above VWAP (market tailwind)', pts:1 },
+  { id:'sr', label:'📊 S/R confirms direction', pts:1 },
+  { id:'watchlist', label:'📋 Dynamic Watchlist triggered', pts:1 },
+  { id:'bensturg', label:'🔔 Ben Watch or BOUGHT alert', pts:1 },
+  { id:'bullish', label:'💰 Bullish Options scanner confirms', pts:1 },
+  { id:'sweep', label:'🌊 Sweep At Ask or Above Ask', pts:0.5 },
+  { id:'premium', label:'💵 Premium $100k+', pts:0.5 },
+];
+
+function renderScanFlags() {
+  const container = document.getElementById('sc-flags');
+  if (!container) return;
+  container.innerHTML = SCAN_FLAGS.map(f=>`
+    <label style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;transition:all 0.15s;" onclick="this.classList.toggle('flag-on');this.style.background=this.classList.contains('flag-on')?'rgba(0,212,170,0.1)':'rgba(255,255,255,0.02)';this.style.borderColor=this.classList.contains('flag-on')?'var(--accent)':'var(--border)';">
+      <input type="checkbox" id="flag-${f.id}" style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0;">
+      <span style="flex:1">${f.label}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent)">+${f.pts}</span>
+    </label>`).join('');
+}
+
+function calcScore() {
+  const ticker = document.getElementById('sc-ticker').value.toUpperCase() || '???';
+  const spyder = parseFloat(document.getElementById('sc-spyder').value) || 0;
+  const stock = parseFloat(document.getElementById('sc-stock').value) || 0;
+  const strike = parseFloat(document.getElementById('sc-strike').value) || 0;
+  const price = parseFloat(document.getElementById('sc-price').value) || 0;
+  const dte = parseInt(document.getElementById('sc-dte').value) || 0;
+
+  // Base score from Spyder
+  let score = 0;
+  if (spyder >= 6) score += 2;
+  if (spyder >= 7) score += 1;
+  if (spyder >= 8) score += 1;
+
+  // Flags
+  let flagScore = 0;
+  SCAN_FLAGS.forEach(f => {
+    const cb = document.getElementById('flag-' + f.id);
+    if (cb && cb.checked) flagScore += f.pts;
+  });
+  score += flagScore;
+
+  // Cap at 8
+  score = Math.min(8, Math.round(score * 10) / 10);
+
+  // Warnings
+  const warnings = [];
+  if (dte === 0) warnings.push('⚠️ Same-day expiry — HARD PASS per rules');
+  else if (dte === 1) warnings.push('⚠️ 1 day to expiry — very high risk, size tiny');
+  else if (dte <= 2) warnings.push('⚠️ 2 days to expiry — time decay brutal, move must happen TODAY');
+  
+  const distPct = stock > 0 && strike > 0 ? Math.abs(strike - stock) / stock * 100 : 0;
+  if (distPct > 5 && dte < 5) warnings.push(`⚠️ Strike ${distPct.toFixed(1)}% away with only ${dte} days — needs big move fast`);
+  
+  const donkey = document.getElementById('flag-donkey');
+  const repeater = document.getElementById('flag-repeater');
+  if (!donkey?.checked && !repeater?.checked && spyder < 7) warnings.push('⚠️ No DonkeyKong or Repeater_Bullish — lower conviction');
+
+  // Update score display
+  const pct = (score / 8) * 100;
+  const bar = document.getElementById('sc-bar');
+  const scoreEl = document.getElementById('sc-score-display');
+  const verdictEl = document.getElementById('sc-verdict');
+  
+  bar.style.width = pct + '%';
+  scoreEl.textContent = score.toFixed(1) + ' / 8';
+
+  if (score >= 8) {
+    bar.style.background = '#22c55e';
+    scoreEl.style.color = '#22c55e';
+    verdictEl.textContent = '✅ GO — MAX CONVICTION';
+    verdictEl.style.color = '#22c55e';
+  } else if (score >= 6) {
+    bar.style.background = '#00d4aa';
+    scoreEl.style.color = '#00d4aa';
+    verdictEl.textContent = '✅ GO — VALID SETUP';
+    verdictEl.style.color = '#00d4aa';
+  } else if (score >= 4) {
+    bar.style.background = '#eab308';
+    scoreEl.style.color = '#eab308';
+    verdictEl.textContent = '⚠️ BORDERLINE — WAIT';
+    verdictEl.style.color = '#eab308';
+  } else {
+    bar.style.background = '#ef4444';
+    scoreEl.style.color = '#ef4444';
+    verdictEl.textContent = '❌ NO-GO — SKIP IT';
+    verdictEl.style.color = '#ef4444';
+  }
+
+  // Trade details
+  if (price > 0 && score >= 6) {
+    const stop = (price * 0.70).toFixed(2);
+    const t1 = (price * 1.40).toFixed(2);
+    const cost = Math.round(price * 100);
+    document.getElementById('sc-trade-output').style.display = 'block';
+    document.getElementById('sc-trade-details').innerHTML = 
+      `<span style="color:var(--muted)">Ticker</span>  ${ticker}<br>` +
+      `<span style="color:var(--muted)">Entry  </span>  <strong style="color:var(--text)">$${price.toFixed(2)}</strong>  (limit)<br>` +
+      `<span style="color:var(--red)">Stop   </span>  <strong style="color:var(--red)">$${stop}</strong>  (-30%)<br>` +
+      `<span style="color:var(--green)">T1     </span>  <strong style="color:var(--green)">$${t1}</strong>  (+40%)<br>` +
+      `<span style="color:var(--muted)">Cost   </span>  $${cost} per contract<br>` +
+      `<span style="color:var(--muted)">DTE    </span>  ${dte} days`;
+  } else {
+    document.getElementById('sc-trade-output').style.display = 'none';
+  }
+
+  // Warnings
+  const warnEl = document.getElementById('sc-warn-output');
+  const warnDetails = document.getElementById('sc-warn-details');
+  if (warnings.length > 0) {
+    warnEl.style.display = 'block';
+    warnDetails.innerHTML = warnings.join('<br>');
+  } else {
+    warnEl.style.display = 'none';
+  }
+}
+
+function resetScore() {
+  document.getElementById('sc-ticker').value = '';
+  document.getElementById('sc-spyder').value = '';
+  document.getElementById('sc-stock').value = '';
+  document.getElementById('sc-strike').value = '';
+  document.getElementById('sc-price').value = '';
+  document.getElementById('sc-dte').value = '';
+  document.querySelectorAll('#sc-flags input[type=checkbox]').forEach(cb => {
+    cb.checked = false;
+    cb.closest('label').classList.remove('flag-on');
+    cb.closest('label').style.background = 'rgba(255,255,255,0.02)';
+    cb.closest('label').style.borderColor = 'var(--border)';
+  });
+  document.getElementById('sc-score-display').textContent = '— / 8';
+  document.getElementById('sc-score-display').style.color = 'var(--accent)';
+  document.getElementById('sc-bar').style.width = '0%';
+  document.getElementById('sc-verdict').textContent = 'ENTER CANDIDATE';
+  document.getElementById('sc-verdict').style.color = 'var(--muted)';
+  document.getElementById('sc-trade-output').style.display = 'none';
+  document.getElementById('sc-warn-output').style.display = 'none';
+}
+
+function renderStats() {
+  const active = trades.filter(t=>t.status==='active').length;
+  const wins = trades.filter(t=>t.status==='win').length;
+  const losses = trades.filter(t=>t.status==='loss').length;
+  const pnl = trades.filter(t=>t.result!=null).reduce((a,t)=>a+Number(t.result),0);
+  const stats = [
+    {l:'Total',v:trades.length,c:'#e8eaf0'},
+    {l:'Active',v:active,c:'#ff6b35'},
+    {l:'Wins',v:wins,c:'#22c55e'},
+    {l:'Losses',v:losses,c:'#ef4444'},
+    {l:'P&L',v:(pnl>=0?'+':'')+'$'+pnl.toFixed(0),c:pnl>=0?'#22c55e':'#ef4444'},
+  ];
+  document.getElementById('stats-row').innerHTML = stats.map(s=>`
+    <div class="stat">
+      <div class="stat-val" style="color:${s.c}">${s.v}</div>
+      <div class="stat-lbl">${s.l}</div>
+    </div>`).join('');
+}
+
+function renderTradeLog() {
+  const filters = ['all','active','win','loss','watching'];
+  document.getElementById('filter-row').innerHTML = filters.map(f=>`
+    <button class="filter-btn ${f===currentFilter?'active':''}" onclick="setFilter('${f}')">${f}</button>`).join('')
+    + `<button class="add-trade-btn" onclick="openAddTrade()" style="margin-left:auto">+ Add Trade</button>`;
+
+  const filtered = currentFilter==='all' ? trades : trades.filter(t=>t.status===currentFilter);
+  const grouped = {};
+  filtered.forEach(t=>{ const d=t.date||'unknown'; if(!grouped[d]) grouped[d]=[]; grouped[d].push(t); });
+  const dates = Object.keys(grouped).sort((a,b)=>b.localeCompare(a));
+
+  document.getElementById('trade-list').innerHTML = dates.map(date=>`
+    <div class="date-header">${date}</div>
+    ${grouped[date].map(t=>tradeCardHTML(t)).join('')}
+  `).join('') || '<div style="text-align:center;color:var(--muted);padding:40px;font-family:monospace;">No trades match filter</div>';
+}
+
+function tradeCardHTML(t) {
+  const s = STATUS_CFG[t.status] || STATUS_CFG.watchlist;
+  const exp = expandedCards.has(t.id);
+  const pnl = t.result!=null ? Number(t.result) : null;
+  return `
+    <div class="trade-card" id="card-${t.id}" style="border:1px solid ${s.border};border-left:3px solid ${s.color};">
+      <div class="trade-header" onclick="toggleCard('${t.id}')">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-family:'DM Mono',monospace;font-size:17px;font-weight:700;color:${s.color}">${escHtml(t.ticker)}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${escHtml(t.contract)}</span>
+          <span class="badge" style="background:${s.bg};color:${s.color}">${s.label}</span>
+          ${pnl!=null?`<span style="font-family:'DM Mono',monospace;font-size:12px;color:${pnl>=0?'#22c55e':'#ef4444'};font-weight:600">${pnl>=0?'+':''}$${pnl}</span>`:''}
+        </div>
+        <span style="color:var(--muted);font-size:13px;">${exp?'▲':'▼'}</span>
+      </div>
+      ${exp ? `
+      <div class="trade-body">
+        <div class="price-pills">
+          ${t.entry?`<div class="price-pill"><div class="pill-lbl">Entry</div><div class="pill-val" style="color:#e8eaf0">$${t.entry}</div></div>`:''}
+          ${t.stop?`<div class="price-pill"><div class="pill-lbl">Stop</div><div class="pill-val" style="color:#ef4444">$${t.stop}</div></div>`:''}
+          ${t.t1?`<div class="price-pill"><div class="pill-lbl">T1</div><div class="pill-val" style="color:#22c55e">$${t.t1}</div></div>`:''}
+          ${t.cost?`<div class="price-pill"><div class="pill-lbl">Cost</div><div class="pill-val" style="color:#ff6b35">$${t.cost}</div></div>`:''}
+        </div>
+        ${t.source?`<div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:7px;">Source: <span style="color:var(--accent)">${escHtml(t.source)}</span></div>`:''}
+        ${t.confirmations&&t.confirmations.length?`
+          <div class="confirms">
+            <div class="confirms-lbl">Confirmations</div>
+            ${t.confirmations.map(c=>`<div style="font-size:12px;margin-bottom:2px">${escHtml(c)}</div>`).join('')}
+          </div>`:''
+        }
+        ${t.notes?`<div style="font-size:12px;color:#9ca3af;line-height:1.6;margin-bottom:8px">${escHtml(t.notes).replace(/\n/g,'<br>')}</div>`:''}
+        ${t.footnote?`<div class="footnote"><div class="fn-lbl">📊 Footnote</div>${escHtml(t.footnote)}</div>`:''}
+        <div class="card-actions">
+          <button class="btn-sm" onclick="openEdit('${t.id}')">✏️ Edit</button>
+          <button class="btn-sm danger" onclick="deleteTrade('${t.id}')">🗑 Delete</button>
+        </div>
+      </div>` : ''}
+    </div>`;
+}
+
+function toggleCard(id) {
+  if (expandedCards.has(id)) expandedCards.delete(id);
+  else expandedCards.add(id);
+  renderTradeLog();
+}
+function setFilter(f) { currentFilter=f; renderTradeLog(); }
+
+function deleteTrade(id) {
+  if (!confirm('Delete this trade?')) return;
+  trades = trades.filter(t=>t.id!==id);
+  persist(); renderStats(); renderTradeLog();
+  toast('Trade deleted');
+}
+
+function openAddTrade() {
+  editingId = null;
+  document.getElementById('f-ticker').value = '';
+  document.getElementById('f-status').value = 'active';
+  document.getElementById('f-contract').value = '';
+  document.getElementById('f-entry').value = '';
+  document.getElementById('f-stop').value = '';
+  document.getElementById('f-t1').value = '';
+  document.getElementById('f-cost').value = '';
+  document.getElementById('f-result').value = '';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('f-source').value = '';
+  document.getElementById('modal-title-text').textContent = 'Add Trade';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function openEdit(id) {
+  const t = trades.find(x=>x.id===id);
+  if (!t) return;
+  editingId = id;
+  document.getElementById('f-ticker').value = t.ticker||'';
+  document.getElementById('f-status').value = t.status||'active';
+  document.getElementById('f-contract').value = t.contract||'';
+  document.getElementById('f-entry').value = t.entry||'';
+  document.getElementById('f-stop').value = t.stop||'';
+  document.getElementById('f-t1').value = t.t1||'';
+  document.getElementById('f-cost').value = t.cost||'';
+  document.getElementById('f-result').value = t.result!=null?t.result:'';
+  document.getElementById('f-notes').value = t.notes||'';
+  document.getElementById('f-date').value = t.date||new Date().toISOString().slice(0,10);
+  document.getElementById('f-source').value = t.source||'';
+  document.getElementById('modal-title-text').textContent = 'Edit Trade';
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+  editingId = null;
+}
+function saveEdit() {
+  const result = document.getElementById('f-result').value;
+  const ticker = document.getElementById('f-ticker').value.toUpperCase();
+  if (!ticker) { toast('Ticker required','error'); return; }
+  const tradeData = {
+    ticker,
+    status: document.getElementById('f-status').value,
+    contract: document.getElementById('f-contract').value,
+    entry: parseFloat(document.getElementById('f-entry').value)||null,
+    stop: parseFloat(document.getElementById('f-stop').value)||null,
+    t1: parseFloat(document.getElementById('f-t1').value)||null,
+    cost: parseFloat(document.getElementById('f-cost').value)||null,
+    result: result!=='' ? parseFloat(result) : null,
+    notes: document.getElementById('f-notes').value,
+    date: document.getElementById('f-date').value || new Date().toISOString().slice(0,10),
+    source: document.getElementById('f-source').value,
+  };
+  if (editingId) {
+    trades = trades.map(t => t.id===editingId ? {...t,...tradeData} : t);
+    toast('Trade updated ✓');
+  } else {
+    const newTrade = { id:'trade-'+Date.now(), confirmations:[], footnote:'', ...tradeData };
+    trades = [newTrade, ...trades];
+    expandedCards.add(newTrade.id);
+    toast('Trade added ✓');
+  }
+  persist(); renderStats(); renderTradeLog();
+  closeModal();
+}
+
+function renderWatchlist() {
+  document.getElementById('watchlist-list').innerHTML = watchlist.map(w=>{
+    const trig = w.status==='triggered';
+    const dist = (w.current&&w.trigger) ? ((w.current-w.trigger)/w.trigger*100).toFixed(1) : null;
+    return `
+      <div class="watch-card" style="border:1px solid ${trig?'rgba(34,197,94,0.3)':'var(--border)'};border-left:3px solid ${trig?'#22c55e':'#6b7280'}">
+        <div class="watch-header">
+          <div>
+            <span class="watch-ticker" style="color:${trig?'#22c55e':'#e8eaf0'}">${escHtml(w.ticker)}</span>
+            <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-left:10px">${escHtml(w.contract)}</span>
+          </div>
+          <span class="badge" style="background:${trig?'rgba(34,197,94,0.15)':'rgba(107,114,128,0.15)'};color:${trig?'#22c55e':'#9ca3af'}">${trig?'✅ Triggered':'⏳ Pending'}</span>
+        </div>
+        <div class="watch-meta">
+          ${w.trigger?`<span>Trigger <strong style="color:var(--accent)">$${w.trigger}</strong></span>`:''}
+          ${w.current?`<span>Current <strong>$${w.current}</strong></span>`:''}
+          ${dist?`<span style="color:${Number(dist)>=0?'#22c55e':'#ef4444'}">${Number(dist)>=0?'+':''}${dist}%</span>`:''}
+        </div>
+        ${w.notes?`<div style="margin-top:6px;font-size:12px;color:#9ca3af">${escHtml(w.notes)}</div>`:''}
+      </div>`;
+  }).join('') || '<div style="text-align:center;color:var(--muted);padding:30px;font-family:monospace">Watchlist empty</div>';
+}
+
+function renderRoutine() {
+  const steps = [
+    { time:'☀️ Pre-Market · Before 9:30 AM CT', color:'#00d4aa', items:['Say "GM check my alerts" → upload scans to Claude','Check SPY — green or red? Above VWAP?','Run Golden Sweep → note Score 6+ names','Run Flow Scanner → double signals = highest conviction','Draw chart lines + pre-fill IBKR brackets'] },
+    { time:'🟢 Market Open · 9:30–11 AM CT', color:'#22c55e', items:['Upload scanner CSVs → "check my momo scan"','Watch Gmail for Ben BOUGHT alerts','Golden Sweep + BOUGHT = your trade','Don\'t chase opens — wait for the signal'] },
+    { time:'⚡ Golden Hour · 1–3 PM CT', color:'#eab308', items:['Run Golden Sweep + Flow Scanner again','Ben\'s VWAP setups fire here most often','When BOUGHT hits — transmit bracket immediately'] },
+    { time:'🔬 Last Hour · 3–4 PM CT', color:'#7b61ff', items:['Run Ben\'s Button scan (full day)','Run All The Things scan','Pre-close = tomorrow\'s setups'] },
+    { time:'🌙 End of Day · After 4 PM CT', color:'#6b7280', items:['Tell AI about your trades → logged automatically','Pre-fill IBKR brackets for tomorrow','H.A.L.T. check before bed'] },
+  ];
+  document.getElementById('routine-list').innerHTML = steps.map(s=>`
+    <div class="section-card" style="border-left:3px solid ${s.color}">
+      <div class="section-title" style="color:${s.color}">${s.time}</div>
+      ${s.items.map(item=>`
+        <label class="checklist-item">
+          <input type="checkbox" style="accent-color:${s.color}">
+          <span>${item}</span>
+        </label>`).join('')}
+    </div>`).join('');
+}
+
+function renderRules() {
+  const rules = [
+    { title:'🚨 WEEKEND / FRIDAY HARD RULE', color:'#ef4444', bg:'rgba(239,68,68,0.08)', border:'rgba(239,68,68,0.3)', items:['ANY Friday trade MUST have fresh Omen confirmation Monday morning','Check pre-market price — gapped up? CANCEL and reassess','NEVER leave buy orders sitting over the weekend','Learned from PLTR 5/18/26 — $77 loss, lesson priceless'] },
+    { title:'✅ TRADE ENTRY CHECKLIST (7 CONFIRMATIONS)', color:'#00d4aa', bg:'rgba(0,212,170,0.06)', border:'rgba(0,212,170,0.2)', items:["Ben's BOUGHT alert received",'Golden Sweep or Spyder scanner confirms','Stock above VWAP on 5-min chart','SPY not crashing — market tailwind','Strike price reasonable — not $10+ away','GTC bracket pre-filled and ready to transmit','Desktop for execution — not phone'] },
+    { title:'❌ NEVER DO THESE', color:'#ff6b35', bg:'rgba(255,107,53,0.06)', border:'rgba(255,107,53,0.2)', items:["Enter without Ben's BOUGHT alert",'Market orders on phone — always limit on desktop','Chase a stock already moved 5%+ at open','Hold without a stop loss bracket','More than 1 contract until consistent','FOMO — if you missed it, you missed it'] },
+    { title:'💰 POSITION SIZING', color:'#22c55e', bg:'rgba(34,197,94,0.06)', border:'rgba(34,197,94,0.2)', items:['Max $500 per trade (IBKR ~$273 available)','1 contract per trade until consistent profitability','Stop = 30% below entry (auto bracket)','T1 = 40% gain (auto bracket)','Scale: sell 50% at T1, let runner ride'] },
+  ];
+  document.getElementById('rules-list').innerHTML = rules.map(r=>`
+    <div class="section-card" style="background:${r.bg};border:1px solid ${r.border};border-left:3px solid ${r.color}">
+      <div class="section-title" style="color:${r.color}">${r.title}</div>
+      ${r.items.map(item=>`
+        <div class="rule-item">
+          <span style="color:${r.color};flex-shrink:0">→</span>
+          <span>${item}</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+const CHIPS = ['Ben sent BOUGHT alert','Trade hit T1 — close it','Update my stop','Add to watchlist','What are my active trades?'];
+
+function renderChips() {
+  document.getElementById('chips-row').innerHTML = CHIPS.map(c=>`
+    <button class="chip" onclick="fillInput('${c}')">${c}</button>`).join('');
+}
+
+function fillInput(text) {
+  document.getElementById('chat-input').value = text;
+  document.getElementById('chat-input').focus();
+}
+
+function renderMessages() {
+  const el = document.getElementById('messages');
+  el.innerHTML = chatHistory.map(m=>`
+    <div class="msg ${m.role}">
+      <div class="bubble ${m.hadAction?'had-action':''}">
+        ${escHtml(m.content).replace(/\n/g,'<br>')}
+      </div>
+    </div>`).join('');
+  if (aiLoading) {
+    el.innerHTML += `<div class="msg assistant"><div class="bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div></div>`;
+  }
+  el.scrollTop = el.scrollHeight;
+}
+
+function buildSystemPrompt() {
+  return `You are Merle's personal trading assistant embedded in her standalone options trading dashboard.
+You update her trade log and watchlist by returning JSON commands.
+
+CURRENT TRADE LOG:
+${JSON.stringify(trades, null, 2)}
+
+CURRENT WATCHLIST:
+${JSON.stringify(watchlist, null, 2)}
+
+TODAY: ${new Date().toISOString().slice(0,10)}
+
+Be concise and direct — she's trading. Always confirm what you did briefly.
+
+RESPONSE FORMAT — return ONLY valid JSON:
+{
+  "message": "Brief reply here",
+  "actions": [
+    { "type": "ADD_TRADE", "trade": { "ticker":"AMZN","contract":"Jul 17 $290 Call","source":"B Sturg","status":"active","entry":3.40,"stop":2.38,"t1":4.76,"cost":340,"notes":"...","confirmations":["..."],"footnote":"" } },
+    { "type": "UPDATE_TRADE", "id": "amzn-002", "updates": { "status":"win","result":136,"resultPct":40,"notes":"Closed at T1" } },
+    { "type": "ADD_WATCHLIST", "item": { "ticker":"NKE","contract":"Jun 18 $46 Call","trigger":42.85,"current":42.50,"status":"triggered","notes":"..." } },
+    { "type": "UPDATE_WATCHLIST", "id": "nke-w1", "updates": { "current":43.10 } },
+    { "type": "REMOVE_WATCHLIST", "id": "nke-w1" }
+  ]
+}
+
+Status values: "active","win","loss","watching","watchlist"
+No actions needed? Use: "actions":[]
+Return ONLY the JSON — no markdown, no backticks.`;
+}
+
+function applyActions(actions) {
+  const log = [];
+  actions.forEach(action => {
+    if (action.type==='ADD_TRADE') {
+      const t = { id:'trade-'+Date.now()+Math.random().toString(36).slice(2,5), date:new Date().toISOString().slice(0,10), confirmations:[], footnote:'', ...action.trade };
+      trades = [t, ...trades];
+      expandedCards.add(t.id);
+      log.push('✅ Logged '+t.ticker+' trade');
+    } else if (action.type==='UPDATE_TRADE') {
+      trades = trades.map(t => t.id===action.id ? {...t,...action.updates} : t);
+      const ticker = trades.find(t=>t.id===action.id)?.ticker||action.id;
+      log.push('✅ Updated '+ticker);
+    } else if (action.type==='ADD_WATCHLIST') {
+      const w = { id:'w-'+Date.now(), ...action.item };
+      watchlist = [w, ...watchlist];
+      log.push('👀 Added '+w.ticker+' to watchlist');
+    } else if (action.type==='UPDATE_WATCHLIST') {
+      watchlist = watchlist.map(w => w.id===action.id ? {...w,...action.updates} : w);
+      log.push('✅ Updated watchlist');
+    } else if (action.type==='REMOVE_WATCHLIST') {
+      const removed = watchlist.find(w=>w.id===action.id);
+      watchlist = watchlist.filter(w=>w.id!==action.id);
+      if (removed) log.push('🗑 Removed '+removed.ticker);
+    }
+  });
+  persist();
+  renderStats();
+  renderWatchlist();
+  renderTradeLog();
+  return log;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text || aiLoading) return;
+  input.value = '';
+  input.style.height = 'auto';
+
+  chatHistory.push({ role:'user', content:text, ts:new Date().toISOString() });
+  persistChat();
+  aiLoading = true;
+  renderMessages();
+  document.getElementById('send-btn').disabled = true;
+
+  try {
+    const apiMessages = chatHistory.slice(-10).map(m=>({ role:m.role, content:m.content }));
+    
+    // Try direct first, fall back to proxy
+    let data;
+    const payload = {
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      system: buildSystemPrompt(),
+      messages: apiMessages,
+    };
+
+    const headers = {
+      'Content-Type':'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    };
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers, body: JSON.stringify(payload)
+      });
+      data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+    } catch(e) {
+      // Fall back to corsproxy.io
+      const res2 = await fetch('https://corsproxy.io/?https://api.anthropic.com/v1/messages', {
+        method:'POST', headers, body: JSON.stringify(payload)
+      });
+      data = await res2.json();
+      if (data.error) throw new Error(data.error.message);
+    }
+
+    const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('') || '{}';
+
+    let parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch { parsed = { message: raw, actions:[] }; }
+
+    let actionLog = [];
+    if (parsed.actions && parsed.actions.length > 0) {
+      actionLog = applyActions(parsed.actions);
+      if (actionLog.length) toast('Dashboard updated ✓');
+    }
+
+    const reply = parsed.message + (actionLog.length ? '\n\n'+actionLog.join('\n') : '');
+    chatHistory.push({ role:'assistant', content:reply, ts:new Date().toISOString(), hadAction: actionLog.length>0 });
+    persistChat();
+  } catch(err) {
+    console.error('AI error:', err);
+    // Fallback: parse the message manually for common commands
+    const text2 = chatHistory[chatHistory.length-1]?.content || '';
+    const fallbackReply = tryManualParse(text2);
+    chatHistory.push({ role:'assistant', content: fallbackReply, ts:new Date().toISOString() });
+    persistChat();
+  }
+
+  aiLoading = false;
+  document.getElementById('send-btn').disabled = false;
+  renderMessages();
+}
+
+// Manual parser as fallback when API is unreachable
+function tryManualParse(text) {
+  const t = text.toLowerCase();
+  
+  // "log TICKER win/loss $X" pattern
+  const logMatch = text.match(/log\s+([A-Z]+)\s+(win|loss|active)/i);
+  const resultMatch = text.match(/\$?([\-\d]+)\s*(?:result|profit|loss|p&l)?/i);
+  const entryMatch = text.match(/entry\s*\$?([\d.]+)/i);
+  const contractMatch = text.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s*\d+\s*\$[\d.]+\s*(call|put)/i);
+
+  if (logMatch) {
+    const ticker = logMatch[1].toUpperCase();
+    const status = logMatch[2].toLowerCase();
+    const result = resultMatch ? parseFloat(resultMatch[1]) : null;
+    const newTrade = {
+      id: 'trade-'+Date.now(),
+      date: new Date().toISOString().slice(0,10),
+      ticker,
+      status,
+      contract: contractMatch ? contractMatch[0] : '',
+      entry: entryMatch ? parseFloat(entryMatch[1]) : null,
+      result,
+      confirmations: [],
+      footnote: '',
+      notes: 'Logged via manual command'
+    };
+    trades = [newTrade, ...trades];
+    expandedCards.add(newTrade.id);
+    persist(); renderStats(); renderTradeLog();
+    toast('Trade logged ✓');
+    return `✅ Logged ${ticker} as ${status}${result ? ' · Result: $'+result : ''}.\n\n(AI offline — used quick-log mode)`;
+  }
+
+  return '⚠️ AI connection issue. Try again in a moment, or use the + Add Trade button in the Log tab.';
+}
+
+document.getElementById('chat-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120)+'px';
+});
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+renderStats();
+renderChips();
+renderMessages();
+renderRoutine();
+renderRules();
+document.getElementById('ai-tab').style.display = 'none';
+// Start on Scan Check tab
+showTab('scan');
+
+// Init
+renderStats();
+renderChips();
+renderMessages();
+renderRoutine();
+renderRules();
+document.getElementById('ai-tab').style.display = 'none';
 showTab('scan');
 </script>
 </body>
