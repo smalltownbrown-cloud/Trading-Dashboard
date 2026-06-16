@@ -117,7 +117,8 @@ button:focus,input:focus,textarea:focus,select:focus{outline:none;}
 </div>
 
 <div id="nav">
-  <button class="nav-btn active" onclick="showTab('ai')">🤖 AI Assistant</button>
+  <button class="nav-btn active" onclick="showTab('scan')" style="color:var(--accent);font-weight:700">⚡ Scan Check</button>
+  <button class="nav-btn" onclick="showTab('ai')">🤖 AI</button>
   <button class="nav-btn" onclick="showTab('log')">📋 Trade Log</button>
   <button class="nav-btn" onclick="showTab('watchlist')">👀 Watchlist</button>
   <button class="nav-btn" onclick="showTab('routine')">📅 Routine</button>
@@ -157,6 +158,59 @@ button:focus,input:focus,textarea:focus,select:focus{outline:none;}
   <div id="rules-tab" class="tab">
     <div id="rules-list"></div>
   </div>
+
+  <!-- SCAN CHECKLIST TAB -->
+  <div id="scan-tab" class="tab">
+    <div style="margin-bottom:14px">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;color:var(--accent)">⚡ Scan Checklist</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px">Score 6+ = GO · Score 8 = Max Conviction · 30% stop · 40% T1</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;">Candidate Info</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:3px;">TICKER</div><input id="sc-ticker" type="text" placeholder="GOOG" oninput="this.value=this.value.toUpperCase()" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:14px;font-family:'DM Mono',monospace;"></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:3px;">SPYDER SCORE (1-8)</div><input id="sc-spyder" type="number" min="1" max="8" placeholder="7" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:14px;font-family:'DM Mono',monospace;"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:3px;">STOCK PRICE</div><input id="sc-stock" type="number" step="0.01" placeholder="371.50" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;font-family:'DM Mono',monospace;"></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:3px;">STRIKE PRICE</div><input id="sc-strike" type="number" step="0.01" placeholder="380" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;font-family:'DM Mono',monospace;"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:3px;">CONTRACT PRICE ($)</div><input id="sc-price" type="number" step="0.01" placeholder="1.45" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;font-family:'DM Mono',monospace;"></div>
+        <div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:3px;">DAYS TO EXPIRY</div><input id="sc-dte" type="number" placeholder="10" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;font-family:'DM Mono',monospace;"></div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;">Signal Flags — tap all that apply</div>
+      <div id="sc-flags" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;">Score</div>
+        <div id="sc-score-display" style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">— / 8</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:6px;height:12px;overflow:hidden;margin-bottom:14px;">
+        <div id="sc-bar" style="height:100%;width:0%;border-radius:6px;background:var(--red);transition:all 0.5s;"></div>
+      </div>
+      <div id="sc-verdict" style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:0.1em;color:var(--muted);">ENTER CANDIDATE</div>
+    </div>
+
+    <div id="sc-trade-output" style="display:none;background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.25);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;">📋 Pre-Queue in IBKR</div>
+      <div id="sc-trade-details" style="font-family:'DM Mono',monospace;font-size:13px;line-height:2.2;color:var(--text);"></div>
+    </div>
+
+    <div id="sc-warn-output" style="display:none;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:14px;margin-bottom:12px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--red);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">⚠️ Warnings</div>
+      <div id="sc-warn-details" style="font-size:13px;color:#fca5a5;line-height:1.8;"></div>
+    </div>
+
+    <button onclick="calcScore()" style="width:100%;background:var(--accent);color:#0d0f14;border:none;border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">⚡ CALCULATE SCORE & VERDICT</button>
+    <button onclick="resetScore()" style="width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:10px;font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;">RESET</button>
+  </div>
+
 </div>
 
 <div class="modal-overlay" id="edit-modal">
@@ -198,7 +252,7 @@ button:focus,input:focus,textarea:focus,select:focus{outline:none;}
 <div id="toast"></div>
 
 <script>
-const API_KEY = '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 -filQKJVoZM6dRoQ-gI712xQxgypjd5MmYNzOGeqKExSI3nuczeP13vgu1cDLPYpKUbRWr6mEpfGGSpdmisUFmQ-z9YvkAAA';
+const API_KEY = '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';
 const KEYS = { trades:'merle-trades-v1', watchlist:'merle-watchlist-v1', chat:'merle-chat-v1' };
 
 function lsLoad(key) {
@@ -272,11 +326,11 @@ function escHtml(str) {
 
 function showTab(id) {
   document.querySelectorAll('.nav-btn').forEach((b,i)=>{
-    const ids=['ai','log','watchlist','routine','rules'];
+    const ids=['scan','ai','log','watchlist','routine','rules'];
     b.classList.toggle('active', ids[i]===id);
   });
   const aiTab = document.getElementById('ai-tab');
-  const tabs = ['log','watchlist','routine','rules'];
+  const tabs = ['scan','log','watchlist','routine','rules'];
   aiTab.classList.toggle('active', id==='ai');
   aiTab.style.display = id==='ai' ? 'flex' : 'none';
   tabs.forEach(t=>{
@@ -284,6 +338,152 @@ function showTab(id) {
   });
   if (id==='log') renderTradeLog();
   if (id==='watchlist') renderWatchlist();
+  if (id==='scan') renderScanFlags();
+}
+
+// ===== SCAN CHECKLIST SCORING =====
+const SCAN_FLAGS = [
+  { id:'donkey', label:'🦍 DonkeyKong Flag', pts:1 },
+  { id:'repeater', label:'🔁 Repeater_Bullish Flag', pts:1 },
+  { id:'allthings', label:'⚡ AllTheThings Flag', pts:1 },
+  { id:'vwap', label:'📈 Stock above VWAP on 5-min', pts:1 },
+  { id:'spy', label:'🌊 SPY above VWAP (market tailwind)', pts:1 },
+  { id:'sr', label:'📊 S/R confirms direction', pts:1 },
+  { id:'watchlist', label:'📋 Dynamic Watchlist triggered', pts:1 },
+  { id:'bensturg', label:'🔔 Ben Watch or BOUGHT alert', pts:1 },
+  { id:'bullish', label:'💰 Bullish Options scanner confirms', pts:1 },
+  { id:'sweep', label:'🌊 Sweep At Ask or Above Ask', pts:0.5 },
+  { id:'premium', label:'💵 Premium $100k+', pts:0.5 },
+];
+
+function renderScanFlags() {
+  const container = document.getElementById('sc-flags');
+  if (!container) return;
+  container.innerHTML = SCAN_FLAGS.map(f=>`
+    <label style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;transition:all 0.15s;" onclick="this.classList.toggle('flag-on');this.style.background=this.classList.contains('flag-on')?'rgba(0,212,170,0.1)':'rgba(255,255,255,0.02)';this.style.borderColor=this.classList.contains('flag-on')?'var(--accent)':'var(--border)';">
+      <input type="checkbox" id="flag-${f.id}" style="width:16px;height:16px;accent-color:var(--accent);flex-shrink:0;">
+      <span style="flex:1">${f.label}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent)">+${f.pts}</span>
+    </label>`).join('');
+}
+
+function calcScore() {
+  const ticker = document.getElementById('sc-ticker').value.toUpperCase() || '???';
+  const spyder = parseFloat(document.getElementById('sc-spyder').value) || 0;
+  const stock = parseFloat(document.getElementById('sc-stock').value) || 0;
+  const strike = parseFloat(document.getElementById('sc-strike').value) || 0;
+  const price = parseFloat(document.getElementById('sc-price').value) || 0;
+  const dte = parseInt(document.getElementById('sc-dte').value) || 0;
+
+  // Base score from Spyder
+  let score = 0;
+  if (spyder >= 6) score += 2;
+  if (spyder >= 7) score += 1;
+  if (spyder >= 8) score += 1;
+
+  // Flags
+  let flagScore = 0;
+  SCAN_FLAGS.forEach(f => {
+    const cb = document.getElementById('flag-' + f.id);
+    if (cb && cb.checked) flagScore += f.pts;
+  });
+  score += flagScore;
+
+  // Cap at 8
+  score = Math.min(8, Math.round(score * 10) / 10);
+
+  // Warnings
+  const warnings = [];
+  if (dte === 0) warnings.push('⚠️ Same-day expiry — HARD PASS per rules');
+  else if (dte === 1) warnings.push('⚠️ 1 day to expiry — very high risk, size tiny');
+  else if (dte <= 2) warnings.push('⚠️ 2 days to expiry — time decay brutal, move must happen TODAY');
+  
+  const distPct = stock > 0 && strike > 0 ? Math.abs(strike - stock) / stock * 100 : 0;
+  if (distPct > 5 && dte < 5) warnings.push(`⚠️ Strike ${distPct.toFixed(1)}% away with only ${dte} days — needs big move fast`);
+  
+  const donkey = document.getElementById('flag-donkey');
+  const repeater = document.getElementById('flag-repeater');
+  if (!donkey?.checked && !repeater?.checked && spyder < 7) warnings.push('⚠️ No DonkeyKong or Repeater_Bullish — lower conviction');
+
+  // Update score display
+  const pct = (score / 8) * 100;
+  const bar = document.getElementById('sc-bar');
+  const scoreEl = document.getElementById('sc-score-display');
+  const verdictEl = document.getElementById('sc-verdict');
+  
+  bar.style.width = pct + '%';
+  scoreEl.textContent = score.toFixed(1) + ' / 8';
+
+  if (score >= 8) {
+    bar.style.background = '#22c55e';
+    scoreEl.style.color = '#22c55e';
+    verdictEl.textContent = '✅ GO — MAX CONVICTION';
+    verdictEl.style.color = '#22c55e';
+  } else if (score >= 6) {
+    bar.style.background = '#00d4aa';
+    scoreEl.style.color = '#00d4aa';
+    verdictEl.textContent = '✅ GO — VALID SETUP';
+    verdictEl.style.color = '#00d4aa';
+  } else if (score >= 4) {
+    bar.style.background = '#eab308';
+    scoreEl.style.color = '#eab308';
+    verdictEl.textContent = '⚠️ BORDERLINE — WAIT';
+    verdictEl.style.color = '#eab308';
+  } else {
+    bar.style.background = '#ef4444';
+    scoreEl.style.color = '#ef4444';
+    verdictEl.textContent = '❌ NO-GO — SKIP IT';
+    verdictEl.style.color = '#ef4444';
+  }
+
+  // Trade details
+  if (price > 0 && score >= 6) {
+    const stop = (price * 0.70).toFixed(2);
+    const t1 = (price * 1.40).toFixed(2);
+    const cost = Math.round(price * 100);
+    document.getElementById('sc-trade-output').style.display = 'block';
+    document.getElementById('sc-trade-details').innerHTML = 
+      `<span style="color:var(--muted)">Ticker</span>  ${ticker}<br>` +
+      `<span style="color:var(--muted)">Entry  </span>  <strong style="color:var(--text)">$${price.toFixed(2)}</strong>  (limit)<br>` +
+      `<span style="color:var(--red)">Stop   </span>  <strong style="color:var(--red)">$${stop}</strong>  (-30%)<br>` +
+      `<span style="color:var(--green)">T1     </span>  <strong style="color:var(--green)">$${t1}</strong>  (+40%)<br>` +
+      `<span style="color:var(--muted)">Cost   </span>  $${cost} per contract<br>` +
+      `<span style="color:var(--muted)">DTE    </span>  ${dte} days`;
+  } else {
+    document.getElementById('sc-trade-output').style.display = 'none';
+  }
+
+  // Warnings
+  const warnEl = document.getElementById('sc-warn-output');
+  const warnDetails = document.getElementById('sc-warn-details');
+  if (warnings.length > 0) {
+    warnEl.style.display = 'block';
+    warnDetails.innerHTML = warnings.join('<br>');
+  } else {
+    warnEl.style.display = 'none';
+  }
+}
+
+function resetScore() {
+  document.getElementById('sc-ticker').value = '';
+  document.getElementById('sc-spyder').value = '';
+  document.getElementById('sc-stock').value = '';
+  document.getElementById('sc-strike').value = '';
+  document.getElementById('sc-price').value = '';
+  document.getElementById('sc-dte').value = '';
+  document.querySelectorAll('#sc-flags input[type=checkbox]').forEach(cb => {
+    cb.checked = false;
+    cb.closest('label').classList.remove('flag-on');
+    cb.closest('label').style.background = 'rgba(255,255,255,0.02)';
+    cb.closest('label').style.borderColor = 'var(--border)';
+  });
+  document.getElementById('sc-score-display').textContent = '— / 8';
+  document.getElementById('sc-score-display').style.color = 'var(--accent)';
+  document.getElementById('sc-bar').style.width = '0%';
+  document.getElementById('sc-verdict').textContent = 'ENTER CANDIDATE';
+  document.getElementById('sc-verdict').style.color = 'var(--muted)';
+  document.getElementById('sc-trade-output').style.display = 'none';
+  document.getElementById('sc-warn-output').style.display = 'none';
 }
 
 function renderStats() {
@@ -719,7 +919,9 @@ renderChips();
 renderMessages();
 renderRoutine();
 renderRules();
-document.getElementById('ai-tab').style.display = 'flex';
+document.getElementById('ai-tab').style.display = 'none';
+// Start on Scan Check tab
+showTab('scan');
 </script>
 </body>
 </html>
