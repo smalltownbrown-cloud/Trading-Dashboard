@@ -705,8 +705,9 @@ canvas.chart{display:block;width:100%;height:auto;}
   </div>
 
   <div id="watchlist-tab" class="tab">
-    <div style="padding:14px 0 0;">
-      <button onclick="openAddWatch()" style="width:100%;padding:11px;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3);border-radius:8px;color:var(--accent);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;margin-bottom:10px;">+ Add to Watchlist</button>
+    <div style="padding:14px 0 0;display:flex;gap:6px;">
+      <button onclick="openAddWatch()" style="flex:1;padding:11px;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3);border-radius:8px;color:var(--accent);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">+ Add to Watchlist</button>
+      <button onclick="clearAllWatch()" style="flex:1;padding:11px;background:rgba(239,68,68,0.10);border:1px solid rgba(239,68,68,0.25);border-radius:8px;color:var(--red);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">🗑 Clear All</button>
     </div>
     <div id="watchlist-list"></div>
   </div>
@@ -2296,16 +2297,7 @@ const SEED_TRADES = [
 ];
 
 const SEED_WATCHLIST = [
-  { id:'nke-w1', ticker:'NKE', contract:'Jun 18 $46 Call', trigger:42.85, current:42.50, status:'triggered', notes:'Triggered 5/19 — close to entry' },
-  { id:'uber-w2', ticker:'UBER', contract:'May 22 $77 Call', trigger:76.50, current:74.00, status:'triggered', notes:'Expires soon — time sensitive' },
-  { id:'pypl-w3', ticker:'PYPL', contract:'May 22 $47.50 Call', trigger:45.75, current:43.95, status:'triggered', notes:'Expires soon — time sensitive' },
-  { id:'dal-w4', ticker:'DAL', contract:'May 29 $74 Call', trigger:72.50, current:68.65, status:'triggered', notes:'Triggered 5/18' },
-  { id:'dis-w5', ticker:'DIS', contract:'Jul 17 $110 Call', trigger:105.00, current:102.40, status:'pending', notes:'Pending — below trigger' },
-  { id:'nxe-w6', ticker:'NXE', contract:'Jun 18 $13 Call', trigger:12.60, current:10.70, status:'pending', notes:'Uranium/nuclear' },
-  { id:'nok-w7', ticker:'NOK', contract:'Jun 18 $15.50 Call', trigger:14.10, current:13.91, status:'pending', notes:'Ethan watchlist 5/20 — close to trigger' },
-  { id:'f-w8', ticker:'F', contract:'Jul 17 $15 Call', trigger:13.40, current:13.12, status:'pending', notes:'Ford — Ethan watchlist 5/20, Score 7 flow earlier this week' },
-  { id:'purr-w9', ticker:'PURR', contract:'Jun 18 $9 Call', trigger:8.20, current:8.06, status:'pending', notes:'Ethan watchlist 5/20 — right at trigger, watch closely' },
-  { id:'zeta-w10', ticker:'ZETA', contract:'Jun 18 $19.50 Call', trigger:18.80, current:18.13, status:'pending', notes:'Ethan watchlist 5/20 — Ethan flagged sweep yesterday too' },
+  { id:'hood-w1', ticker:'HOOD', contract:'Jul 10 $115 Call', trigger:114.10, current:113.86, status:'pending', notes:'Scored 6 (Repeater_Bullish, Sweep) 7/8. Trigger = break of today\'s session high ($114.10) for continuation. VWAP support/invalidation ~$112.40 — below that, thesis is dead. Passed 7/8 only due to <15min to close, not a chart flaw — re-confirm fresh tomorrow before entry.' },
 ];
 
 let trades = lsLoad(KEYS.trades) || SEED_TRADES;
@@ -2536,6 +2528,7 @@ function renderRules() {
     { title:'🌊 OVERNIGHT / MULTI-DAY GAP DISCIPLINE', color:'#3b82f6', bg:'rgba(59,130,246,0.06)', border:'rgba(59,130,246,0.2)', items:['Before holding overnight: check for scheduled catalysts (earnings, Fed days, sector news, overseas correlated moves) — not a reason to skip the hold, a reason to know your exposure','Stop distance must clear normal overnight/pre-market noise, not just sit at the "correct" structural level — check the last few sessions\' typical range before setting it, especially on 30+ DTE holds','Size is the real gap-risk brake, not stop tightness — don\'t tighten stops to compensate for size; size down instead if a name feels gap-risky','A gap-through fill is NOT a stop-direction violation — it\'s the stop executing at whatever price the market opens at. Log as "gap-through" in Trade Log notes to track frequency separately from ordinary stop-outs','Learned 7/7–7/8/26 — NVDA, DRAM, SOFI, UPWK all gapped through stops within a 2-day window; traced to one SPY-level gap hitting 4 correlated overnight long-call positions, not 4 separate entry errors'] },
     { title:'⚖️ AGGREGATE OVERNIGHT DIRECTIONAL EXPOSURE', color:'#7b61ff', bg:'rgba(123,97,255,0.06)', border:'rgba(123,97,255,0.2)', items:['Track overnight exposure as ONE directional book, not per-trade — total up existing overnight long-call premium before adding a new hold','Risk budget = % of account value in overnight premium, not a fixed contract count — scales naturally as account grows without manual re-tiering','Ben\'s alerts skew call-only by design — that\'s a fine signal source but should not become 100% of overnight exposure by default','PUTS ARE UNAFFECTED BY THE SPY/VWAP GATE (same as the original rule states) — a put setup is valid anytime the STOCK\'s own VWAP/structure is bearish, regardless of what SPY is doing. A falling SPY adds conviction/tailwind to a put but is not a requirement','Puts get the exact same validation bar as calls, no shortcuts — Spyder Score 6+ AND chart confirmation using the stock\'s own VWAP (below it, S/R agrees, strike in range). SPY direction is context, never the trigger','Don\'t wait for a red SPY day to look for puts — score and chart-confirm put candidates anytime, the same way calls get evaluated anytime SPY is above VWAP','A one-sided overnight book (all calls or all puts) is itself a risk flag — trim, hedge with an unrelated opposite-side setup, or size the next same-side trade down, regardless of how well it scores','Consider debit spreads (capped max loss) for the overnight-held portion once size grows past comfortable naked-long exposure — lets size scale without gap tail risk scaling linearly'] },
     { title:'⏱️ TIME-WINDOWED CONFLICTING SIGNAL RULE', color:'#eab308', bg:'rgba(234,179,8,0.06)', border:'rgba(234,179,8,0.2)', items:['UPDATED 7/8/26 — the old rule checked a ticker\'s ENTIRE DAY of scores at once, which wrongly excluded names where calls and puts scored 6+ hours apart in different market regimes (not a real conflict, just stale data being compared to fresh data)','NEW RULE: only exclude a ticker if it shows Score 6+ on BOTH calls AND puts within the SAME rolling 45–60 minute window — that is a real, current contradiction worth avoiding','A 6+ signal on one side that is more than ~60 minutes old should be treated as STALE and dropped from the conflict check — only the freshest signal per side counts toward flagging a conflict','Validated 7/8/26 on NVDA: puts scored 6-7 only during the 9:48–11:17am gap/whipsaw window; calls resumed and strengthened to score 8 from 11:00am onward with zero put signals after 11:17am — the old whole-day rule wrongly excluded a real, developing call trend','When reviewing a ticker, always check the Time column alongside Score — a high score sitting on a stale timestamp is not the same as a high score sitting on a fresh one','This refinement applies to both calls and puts equally — a stale bullish signal from hours ago shouldn\'t block a fresh, real bearish setup either'] },
+    { title:'📋 WATCHLIST INTEGRITY RULE', color:'#00d4aa', bg:'rgba(0,212,170,0.06)', border:'rgba(0,212,170,0.2)', items:['Added 7/8/26 — the Hub watchlist had sat stale with May placeholder data for weeks; nothing current was ever flowing in, so it was useless for overnight/pre-market review','ONLY THREE VALID SOURCES for a watchlist entry: (1) a Ben/Ethan alert with an explicit stated price level, (2) a Dynamic Watchlist CSV row with a real Entry Long/Short trigger, (3) a chart YOU or Claude has actually reviewed, with a trigger price read directly off that chart (VWAP reclaim level, session high/low, real S/R) — never an estimate or placeholder','NEVER invent a trigger number just to fill the field. If there is no real level from one of the 3 sources above, the entry should say "no confirmed trigger yet" rather than guess a price','A raw Score 6+ scanner line with no chart review does NOT belong on the watchlist — that is just a day\'s scan output, not a tracked setup. It only earns a spot once it has been chart-confirmed or explicitly flagged by Ben/Ethan','Lifecycle: item triggers and gets taken → remove from watchlist, log to Trade Log instead. Item goes stale or thesis breaks → remove (Clear All button or individual trash icon). Never let dead entries linger session to session','Refresh routine: at the start or end of each session, tap Clear All, then paste in that session\'s fresh watchlist bulk-import JSON — this is now a standard part of every GM Check / scan session, not optional'] },
   ];
   document.getElementById('rules-list').innerHTML = rules.map(r=>`
     <div class="section-card" style="background:${r.bg};border:1px solid ${r.border};border-left:3px solid ${r.color}">
@@ -2627,6 +2620,15 @@ function removeWatch(id) {
   persist();
   renderWatchlist();
   toast('Removed ✓');
+}
+
+function clearAllWatch() {
+  if(!watchlist.length) { toast('Watchlist already empty'); return; }
+  if(!confirm('Clear the entire watchlist? This removes all '+watchlist.length+' item(s). Paste a fresh bulk import after.')) return;
+  watchlist = [];
+  persist();
+  renderWatchlist();
+  toast('Watchlist cleared ✓');
 }
 
 function openBulk() {
