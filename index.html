@@ -38,9 +38,6 @@ button:focus,input:focus,textarea:focus,select:focus{outline:none;}
 #hub-content{position:fixed;top:54px;left:0;right:0;bottom:0;overflow:hidden;}
 .tool-panel{display:none;width:100%;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .tool-panel.active{display:block;}
-/* Dashboard ai-tab needs flex */
-#ai-tab{display:none;flex-direction:column;}
-#ai-tab.active{display:flex;}
 
 /* ══ DASHBOARD CSS ══ */
 :root {
@@ -93,8 +90,6 @@ button:focus,input:focus,textarea:focus,select:focus{outline:none;}
 .watch-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;}
 .watch-ticker{font-family:'DM Mono',monospace;font-size:17px;font-weight:700;}
 .watch-meta{display:flex;gap:14px;font-size:11px;font-family:'DM Mono',monospace;}
-#ai-tab{display:none;flex-direction:column;height:100%;}
-#ai-tab.active{display:flex;}
 .chips{padding:10px 16px 0;display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;}
 .chip{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.2);color:var(--accent);border-radius:16px;padding:4px 11px;font-family:'DM Mono',monospace;font-size:9px;cursor:pointer;letter-spacing:0.04em;white-space:nowrap;}
 .messages{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch;}
@@ -110,9 +105,6 @@ button:focus,input:focus,textarea:focus,select:focus{outline:none;}
 .dot:nth-child(2){animation-delay:0.2s;}
 .dot:nth-child(3){animation-delay:0.4s;}
 .input-area{padding:10px 16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
-#chat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:14px;resize:none;line-height:1.5;}
-#send-btn{background:var(--accent);color:#0d0f14;border:none;border-radius:10px;padding:10px 16px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:0.06em;white-space:nowrap;transition:all 0.15s;}
-#send-btn:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed;}
 .section-card{background:var(--surface);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
 .section-title{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
 .checklist-item{display:flex;align-items:flex-start;gap:10px;padding:6px 10px;background:rgba(255,255,255,0.02);border-radius:6px;margin-bottom:5px;font-size:13px;cursor:pointer;}
@@ -696,29 +688,17 @@ canvas.chart{display:block;width:100%;height:auto;}
 </div>
 
 <div id="nav">
-  <button class="dash-nav-btn active" onclick="showTab('ai')">🤖 AI Assistant</button>
-  <button class="dash-nav-btn" onclick="showTab('log')">📋 Trade Log</button>
+  <button class="dash-nav-btn active" onclick="showTab('log')">📋 Trade Log</button>
   <button class="dash-nav-btn" onclick="showTab('watchlist')">👀 Watchlist</button>
   <button class="dash-nav-btn" onclick="showTab('routine')">📅 Routine</button>
   <button class="dash-nav-btn" onclick="showTab('rules')">⚠️ Rules</button>
 </div>
 
 <div id="content">
-  <div id="ai-tab" class="active">
-    <div style="padding:10px 16px 0;display:flex;gap:6px;">
-      <button onclick="openBulk()" style="flex:1;padding:9px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.3);border-radius:8px;color:var(--accent2);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">⚡ Bulk Import</button>
-    </div>
-    <div class="chips" id="chips-row"></div>
-    <div class="messages" id="messages"></div>
-    <div class="input-area">
-      <textarea id="chat-input" rows="1" placeholder="Tell me about a trade, paste a Ben alert..."></textarea>
-      <button id="send-btn" onclick="sendMessage()">SEND</button>
-    </div>
-  </div>
-
-  <div id="log-tab" class="tab">
-    <div style="padding:14px 0 0;">
-      <button onclick="openAddTrade()" style="width:100%;padding:11px;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3);border-radius:8px;color:var(--accent);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;margin-bottom:10px;">+ Add Trade</button>
+  <div id="log-tab" class="tab active">
+    <div style="padding:14px 0 0;display:flex;gap:8px;">
+      <button onclick="openAddTrade()" style="flex:1;padding:11px;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3);border-radius:8px;color:var(--accent);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">+ Add Trade</button>
+      <button onclick="openBulk()" style="flex:1;padding:11px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.3);border-radius:8px;color:var(--accent2);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">⚡ Bulk Import</button>
     </div>
     <div class="filter-row" id="filter-row"></div>
     <div id="trade-list"></div>
@@ -2267,7 +2247,7 @@ canvas.chart{display:block;width:100%;height:auto;}
 <!-- Notes strip -->
 <div class="notes-strip">
   <div class="nl">📋 Contract Selection Rule</div>
-  Match the scanner's expiry if you're scalping. For swings, go 1–2 expirations further out than the scanner shows for more cushion. Strike: nearest one above the current stock price. Enter alone first — once filled, set T1/stop off the ACTUAL fill price (not the limit), with stop distance scaled to the option's IV rather than a flat 25-30%.
+  Match the scanner's expiry if you're scalping. For swings, go 1–2 expirations further out than the scanner shows for more cushion. Strike: nearest one above the current stock price. Set bracket immediately — stop 25–30% below entry, T1 at 40% gain.
 </div>
 
 <button class="reset-btn" onclick="resetAll()">↺ Reset Checklist</button>
@@ -2282,18 +2262,12 @@ function showTool(id, btn) {
   document.querySelectorAll('.hub-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id+'-panel').classList.add('active');
   if(btn) btn.classList.add('active');
-  // Ensure dashboard AI tab displays correctly after panel switch
-  if (id === 'dashboard') {
-    const ai = document.getElementById('ai-tab');
-    if (ai && ai.classList.contains('active')) ai.style.display = 'flex';
-  }
 }
 </script>
 
 <!-- DASHBOARD JS -->
 <script>
-const API_KEY = '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';
-const KEYS = { trades:'merle-trades-v1', watchlist:'merle-watchlist-v1', chat:'merle-chat-v1' };
+const KEYS = { trades:'merle-trades-v1', watchlist:'merle-watchlist-v1' };
 
 function lsLoad(key) {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; }
@@ -2325,14 +2299,10 @@ const SEED_WATCHLIST = [
   { id:'zeta-w10', ticker:'ZETA', contract:'Jun 18 $19.50 Call', trigger:18.80, current:18.13, status:'pending', notes:'Ethan watchlist 5/20 — Ethan flagged sweep yesterday too' },
 ];
 
-const SEED_CHAT = [{ role:'assistant', content:'👋 GM Merle! I\'m your standalone AI trading assistant — no Claude needed!\n\nI\'m wired directly into your Dashboard. Just talk to me:\n• "Ben bought AMZN $290 calls at $3.40"\n• "AMZN hit T1 — close it as a win"\n• "Update my stop to $2.80"\n• "Add NKE to watchlist, trigger $43"\n\nI\'ll log everything instantly. 🎯', ts: new Date().toISOString() }];
-
 let trades = lsLoad(KEYS.trades) || SEED_TRADES;
 let watchlist = lsLoad(KEYS.watchlist) || SEED_WATCHLIST;
-let chatHistory = lsLoad(KEYS.chat) || SEED_CHAT;
 let currentFilter = 'all';
 let editingId = null;
-let aiLoading = false;
 let expandedCards = new Set(trades.filter(t=>t.status==='active').map(t=>t.id));
 
 const STATUS_CFG = {
@@ -2349,8 +2319,6 @@ function persist() {
   lsSave(KEYS.watchlist, watchlist);
   setTimeout(()=>{ document.getElementById('saving-indicator').style.display='none'; }, 800);
 }
-function persistChat() { lsSave(KEYS.chat, chatHistory); }
-
 function toast(msg, type='success') {
   const el = document.getElementById('toast');
   el.textContent = msg;
@@ -2366,15 +2334,11 @@ function escHtml(str) {
 }
 
 function showTab(id) {
+  const ids=['log','watchlist','routine','rules'];
   document.querySelectorAll('.dash-nav-btn').forEach((b,i)=>{
-    const ids=['ai','log','watchlist','routine','rules'];
     b.classList.toggle('active', ids[i]===id);
   });
-  const aiTab = document.getElementById('ai-tab');
-  const tabs = ['log','watchlist','routine','rules'];
-  aiTab.classList.toggle('active', id==='ai');
-  aiTab.style.display = id==='ai' ? 'flex' : 'none';
-  tabs.forEach(t=>{
+  ids.forEach(t=>{
     document.getElementById(t+'-tab').classList.toggle('active', t===id);
   });
   if (id==='log') renderTradeLog();
@@ -2535,11 +2499,11 @@ function renderWatchlist() {
 
 function renderRoutine() {
   const steps = [
-    { time:'☀️ Pre-Market · Before 9:30 AM CT', color:'#00d4aa', items:['Say "GM check my alerts" → upload scans to Claude','Check SPY — green or red? Above VWAP?','Run Golden Sweep → note Score 6+ names (calls AND puts)','Run Flow Scanner → double signals = highest conviction','Draw chart lines — brackets get built AFTER entry fills, not pre-filled'] },
-    { time:'🟢 Market Open · 9:30–11 AM CT', color:'#22c55e', items:['Upload scanner CSVs → "check my momo scan"','Watch Gmail for Ben/Ethan alerts','Score 6+ AND chart confirms (+ Watchlist Integrity 2nd source) = your trade — BOUGHT alert is bonus, not required','Don\'t chase opens — wait for the pullback/base'] },
-    { time:'⚡ Golden Hour · 1–3 PM CT', color:'#eab308', items:['Run Golden Sweep + Flow Scanner again','Ben\'s VWAP setups fire here most often','Enter alone first, confirm fill, THEN transmit T1/stop bracket off actual fill price'] },
-    { time:'🔬 Last Hour · 3–4 PM CT', color:'#7b61ff', items:['Run Ben\'s Button scan (full day)','Run All The Things scan','Pre-close = tomorrow\'s setups','Check for overnight catalysts before holding — avoid stacking correlated long-call exposure'] },
-    { time:'🌙 End of Day · After 4 PM CT', color:'#6b7280', items:['Tell AI about your trades → logged automatically','Note any RS exceptions or chased entries separately in Trade Log','H.A.L.T. check before bed'] },
+    { time:'☀️ Pre-Market · Before 9:30 AM CT', color:'#00d4aa', items:['Say "GM check my alerts" → upload scans to Claude','Check SPY — green or red? Above VWAP?','Run Golden Sweep → note Score 6+ names','Run Flow Scanner → double signals = highest conviction','Draw chart lines + pre-fill IBKR brackets'] },
+    { time:'🟢 Market Open · 9:30–11 AM CT', color:'#22c55e', items:['Upload scanner CSVs → "check my momo scan"','Watch Gmail for Ben BOUGHT alerts','Golden Sweep + BOUGHT = your trade','Don\'t chase opens — wait for the signal'] },
+    { time:'⚡ Golden Hour · 1–3 PM CT', color:'#eab308', items:['Run Golden Sweep + Flow Scanner again','Ben\'s VWAP setups fire here most often','When BOUGHT hits — transmit bracket immediately'] },
+    { time:'🔬 Last Hour · 3–4 PM CT', color:'#7b61ff', items:['Run Ben\'s Button scan (full day)','Run All The Things scan','Pre-close = tomorrow\'s setups'] },
+    { time:'🌙 End of Day · After 4 PM CT', color:'#6b7280', items:['Tell AI about your trades → logged automatically','Pre-fill IBKR brackets for tomorrow','H.A.L.T. check before bed'] },
   ];
   document.getElementById('routine-list').innerHTML = steps.map(s=>`
     <div class="section-card" style="border-left:3px solid ${s.color}">
@@ -2554,14 +2518,17 @@ function renderRoutine() {
 
 function renderRules() {
   const rules = [
-    { title:'🚨 WEEKEND / FRIDAY HARD RULE', color:'#ef4444', bg:'rgba(239,68,68,0.08)', border:'rgba(239,68,68,0.3)', items:['ANY Friday trade MUST have fresh Omen confirmation Monday morning','Check pre-market price — gapped up? CANCEL and reassess','NEVER leave buy orders sitting over the weekend','Learned from PLTR 5/18/26 — $77 loss, lesson priceless'] },
-    { title:'🎯 STOP-LOSS SEQUENCING RULE (DEFAULT PROCESS)', color:'#3b82f6', bg:'rgba(59,130,246,0.06)', border:'rgba(59,130,246,0.2)', items:['Enter alone first — NO bracket/stop/target attached to entry order','Wait for fill confirmation — note the ACTUAL average fill price','Calculate T1 and stop off the REAL fill price, never the original limit price','Then enter T1 + stop as a linked GTC OCA bracket pair in TWS','Stop distance should scale with the option\'s IV — thin stops (under ~8-10% of option price) on high-IV names (90%+) are inside normal noise and get whipsawed','Learned from INTC 7/9/26 — limit 3.10, filled 2.83, stop set at 2.90 (above the fill!) triggered instantly'] },
-    { title:'⬆️ STOP DIRECTION RULE', color:'#a855f7', bg:'rgba(168,85,247,0.06)', border:'rgba(168,85,247,0.2)', items:['Stops only move UP, never down — no exceptions','Once a stop is raised to lock in a level, it never gets loosened to give the trade more room','Learned from TOST loss 6/2/26'] },
-    { title:'✅ TRADE ENTRY CHECKLIST', color:'#00d4aa', bg:'rgba(0,212,170,0.06)', border:'rgba(0,212,170,0.2)', items:['Spyder Score 6+ AND chart confirms (VWAP, strike in range, S/R agrees) = valid trade','Watchlist Integrity Rule: Score 6+ backing PLUS at least one more source — alert with explicit price, Dynamic Watchlist trigger, or chart-reviewed level','Ben/Ethan BOUGHT alert = bonus conviction, not a hard requirement','Calls: SPY above VWAP (binary gate) unless RS Exception applies','Puts: judged on the stock\'s own structure — no SPY/VWAP gate','Time-windowed conflict check: only same 45-60 min window call/put signals on one ticker count as a real conflict','GTC bracket entered AFTER fill, per Stop-Loss Sequencing Rule above'] },
-    { title:'🔄 RELATIVE STRENGTH (RS) EXCEPTION', color:'#eab308', bg:'rgba(234,179,8,0.06)', border:'rgba(234,179,8,0.3)', items:['When SPY is below VWAP, a countertrend call is allowed ONLY if: name is at a defined Ben/Ethan level','AND shows true divergence — higher lows on the name while SPY makes lower lows','Sized at Tier 1 (2 contracts) max, tight stops','Logged as "RS exception" in Trade Log to track separately — not yet a proven edge','Formalized 7/7/26 from the GOOGL trade'] },
-    { title:'❌ NEVER DO THESE', color:'#ff6b35', bg:'rgba(255,107,53,0.06)', border:'rgba(255,107,53,0.2)', items:['Chase a stock already +5% intraday without a pullback/base — if chased anyway, tighten stop immediately and log "chased"','Market orders on phone — always limit on desktop when possible','Set a stop before the entry fills (see Stop-Loss Sequencing Rule)','Loosen a stop once it\'s been raised','Hold multiple correlated long-call positions overnight — one SPY-level gap can stop them all out at once','Increase position size mid-trade — tier is locked before entry','FOMO — if you missed it, you missed it'] },
-    { title:'💰 POSITION SIZING (TIERED)', color:'#22c55e', bg:'rgba(34,197,94,0.06)', border:'rgba(34,197,94,0.2)', items:['Tier 1 (Score 6-7): 2 contracts','Tier 2 (Score 8 + chart + one secondary source): 3-4 contracts','Tier 3 (Score 8 + chart + both secondary sources stacked): up to 5 contracts hard cap','Tier is locked before entry — never increased mid-trade','Scale out: sell partial at T1, let remainder ride with stop moved up (never down)'] },
-    { title:'🌙 OVERNIGHT / MULTI-DAY GAP DISCIPLINE', color:'#6b7280', bg:'rgba(107,114,128,0.08)', border:'rgba(107,114,128,0.25)', items:['Check for scheduled catalysts before holding overnight','Consider tightening stop or taking partial profit before close in volatile sectors','Apply Monday reassessment discipline to every overnight hold','Avoid correlated long-call exposure overnight — learned from NVDA/DRAM/SOFI/UPWK gap-through losses, all hit by one SPY-level gap-down'] },
+    { title:'🚨 WEEKEND / FRIDAY HARD RULE', color:'#ef4444', bg:'rgba(239,68,68,0.08)', border:'rgba(239,68,68,0.3)', items:['ANY Friday trade MUST have fresh Omen confirmation Monday morning','Check pre-market price first — gapped up significantly? Cancel and reassess','NEVER leave buy orders sitting over the weekend unreviewed','Learned from PLTR loss 5/18/26'] },
+    { title:'🛑 STOP DIRECTION HARD RULE', color:'#ef4444', bg:'rgba(239,68,68,0.08)', border:'rgba(239,68,68,0.3)', items:['Stops only move UP, never down','Cancel-and-reenter to adjust a stop — never modify a live order downward','Learned from TOST loss 6/2/26'] },
+    { title:'📋 ENTRY SEQUENCING (default for every trade)', color:'#00d4aa', bg:'rgba(0,212,170,0.06)', border:'rgba(0,212,170,0.2)', items:['Enter ALONE first — no bracket attached','Wait for fill confirmation, note the ACTUAL average fill price','Calculate T1 (40% gain) and stop (30% loss) off the real fill — not the original limit','Then enter T1 + stop as a linked GTC OCA pair (manual link required — single-leg only via connector)','Stop distance should scale with the option\\'s IV/volatility — thin stops on high-IV names sit inside normal noise','Learned from INTC instant stop-out 7/9/26'] },
+    { title:'🎯 STOP-LOSS EXECUTION QUALITY', color:'#00d4aa', bg:'rgba(0,212,170,0.06)', border:'rgba(0,212,170,0.2)', items:['Use stop-LIMIT orders on options, never stop-market — set limit a few cents below the stop trigger','Widen the stop buffer further on thinner-volume strikes, beyond standard IV-scaling','Where practical, judge the thesis off the underlying STOCK\\'s price/VWAP — not the option\\'s own last-trade tick, which can show noise the stock chart never confirms','Learned from NVDA option-liquidity stop-out 7/10/26'] },
+    { title:'✅ WATCHLIST INTEGRITY RULE (tightened 7/14/26)', color:'#22c55e', bg:'rgba(34,197,94,0.06)', border:'rgba(34,197,94,0.2)', items:['Score 6+ Spyder scanner hit is NON-NEGOTIABLE — cannot be substituted by stacking secondary sources','Alert + Dynamic Watchlist trigger TOGETHER do not equal scanner backing','No scanner leg = hard pass, regardless of how many other sources agree','Learned from TRIP 8/21 $15c loss 7/14/26 (alert + DW trigger only, no Score 6+)'] },
+    { title:'💧 LIQUIDITY VERIFICATION (refined 7/14/26)', color:'#22c55e', bg:'rgba(34,197,94,0.06)', border:'rgba(34,197,94,0.2)', items:['Alert-only / Momo-only setups: hard floor of 500 OI, no exceptions','Score 6+ Spyder hits: 500 OI is a guideline, not an absolute floor — a fresh sweep can print on low OI because the sweep itself is building it','For Score 6+ names, weight bid/ask spread width + quoted size more heavily than raw OI','Always cross-check the Momo scan / volume sources to confirm real momentum is behind the score, not just a number in isolation'] },
+    { title:'📊 VOLUME FOLLOW-THROUGH (new 7/17/26)', color:'#7b61ff', bg:'rgba(123,97,255,0.08)', border:'rgba(123,97,255,0.2)', items:['A single volume spike is NOT sufficient to confirm a breakdown/breakout on its own','Want the spike to repeat or hold for at least one more confirming candle before trusting it as structural','Thin OI on a sweep can be an early tell the volume itself lacks real conviction (one opportunistic bet vs. an established institutional thesis)','Learned from IGV $91P 7/17/26 — one spike, no follow-through, stock fully round-tripped back above VWAP'] },
+    { title:'⏱️ DELAYED OPTIONS DATA (new 7/17/26)', color:'#7b61ff', bg:'rgba(123,97,255,0.08)', border:'rgba(123,97,255,0.2)', items:['Options quotes run ~15 min delayed unless explicitly marked live — last price can be stale and mismatch actual P&L','Watch for a "DELAYED DATA" badge, or a last-price/gain that doesn\\'t match the Position panel\\'s Avg Price / Unrealized P&L','Default to the underlying STOCK\\'s real-time price/VWAP as the trustworthy read, not the option\\'s own tick'] },
+    { title:'💰 POSITION SIZING TIERS', color:'#22c55e', bg:'rgba(34,197,94,0.06)', border:'rgba(34,197,94,0.2)', items:['Tier 1 — Score 6–7: 2 contracts','Tier 2 — Score 8 + chart + one secondary source: 3–4 contracts','Tier 3 — Score 8 + chart + BOTH secondary sources stacked: up to 5 contracts (hard cap)','Tier is locked before entry — never increased mid-trade','T1 target = 40% gain / Stop = 30% loss off the ACTUAL fill (IV-scaled tighter/wider as conditions call for it)','Scale-out: sell partial at T1, let remainder ride with stop moved up'] },
+    { title:'🌊 MOMO SCAN / SMART DATA EDGE PATTERN', color:'#3b82f6', bg:'rgba(59,130,246,0.06)', border:'rgba(59,130,246,0.2)', items:['Momo hit + Score 6+ scanner backing = valid secondary source (always state premium $ + trade size)','Momo-only (no Score 6+): treat as chart-confirmation candidate, not a trade on premium size alone','Pattern: (1) initial spike on volume, (2) pullback that HOLDS above VWAP — this hold is the entry signal, (3) resume above VWAP, (4) stop just below VWAP, (5) target = prior high','Momo/Smart-Data-Edge trades prefer SHORTER-dated contracts (exception to the general longer-dated preference for standard Spyder trades)'] },
+    { title:'❌ NEVER DO THESE', color:'#ff6b35', bg:'rgba(255,107,53,0.06)', border:'rgba(255,107,53,0.2)', items:['Enter a trade with no Score 6+ scanner backing (alert/DW alone is not enough)','Same-day expiry contracts','Chase a stock already +5% intraday with no pullback/base (log "chased" if taken anyway)','Hold overnight without checking for scheduled catalysts','Modify a live stop by lowering it — cancel and reenter instead','Trust an option\\'s last-trade tick over the underlying stock\\'s real price when something looks off'] },
   ];
   document.getElementById('rules-list').innerHTML = rules.map(r=>`
     <div class="section-card" style="background:${r.bg};border:1px solid ${r.border};border-left:3px solid ${r.color}">
@@ -2574,180 +2541,10 @@ function renderRules() {
     </div>`).join('');
 }
 
-const CHIPS = ['Ben sent BOUGHT alert','Trade hit T1 — close it','Update my stop','Add to watchlist','What are my active trades?'];
-
-function renderChips() {
-  document.getElementById('chips-row').innerHTML = CHIPS.map(c=>`
-    <button class="chip" onclick="fillInput('${c}')">${c}</button>`).join('');
-}
-
-function fillInput(text) {
-  document.getElementById('chat-input').value = text;
-  document.getElementById('chat-input').focus();
-}
-
-function renderMessages() {
-  const el = document.getElementById('messages');
-  el.innerHTML = chatHistory.map(m=>`
-    <div class="msg ${m.role}">
-      <div class="bubble ${m.hadAction?'had-action':''}">
-        ${escHtml(m.content).replace(/\n/g,'<br>')}
-      </div>
-    </div>`).join('');
-  if (aiLoading) {
-    el.innerHTML += `<div class="msg assistant"><div class="bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div></div>`;
-  }
-  el.scrollTop = el.scrollHeight;
-}
-
-function buildSystemPrompt() {
-  return `You are Merle's personal trading assistant embedded in her standalone options trading dashboard.
-You update her trade log and watchlist by returning JSON commands.
-
-CURRENT TRADE LOG:
-${JSON.stringify(trades, null, 2)}
-
-CURRENT WATCHLIST:
-${JSON.stringify(watchlist, null, 2)}
-
-TODAY: ${new Date().toISOString().slice(0,10)}
-
-Be concise and direct — she's trading. Always confirm what you did briefly.
-
-RESPONSE FORMAT — return ONLY valid JSON:
-{
-  "message": "Brief reply here",
-  "actions": [
-    { "type": "ADD_TRADE", "trade": { "ticker":"AMZN","contract":"Jul 17 $290 Call","source":"B Sturg","status":"active","entry":3.40,"stop":2.38,"t1":4.76,"cost":340,"notes":"...","confirmations":["..."],"footnote":"" } },
-    { "type": "UPDATE_TRADE", "id": "amzn-002", "updates": { "status":"win","result":136,"resultPct":40,"notes":"Closed at T1" } },
-    { "type": "ADD_WATCHLIST", "item": { "ticker":"NKE","contract":"Jun 18 $46 Call","trigger":42.85,"current":42.50,"status":"triggered","notes":"..." } },
-    { "type": "UPDATE_WATCHLIST", "id": "nke-w1", "updates": { "current":43.10 } },
-    { "type": "REMOVE_WATCHLIST", "id": "nke-w1" }
-  ]
-}
-
-Status values: "active","win","loss","watching","watchlist"
-No actions needed? Use: "actions":[]
-Return ONLY the JSON — no markdown, no backticks.`;
-}
-
-function applyActions(actions) {
-  const log = [];
-  actions.forEach(action => {
-    if (action.type==='ADD_TRADE') {
-      const t = { id:'trade-'+Date.now()+Math.random().toString(36).slice(2,5), date:new Date().toISOString().slice(0,10), confirmations:[], footnote:'', ...action.trade };
-      trades = [t, ...trades];
-      expandedCards.add(t.id);
-      log.push('✅ Logged '+t.ticker+' trade');
-    } else if (action.type==='UPDATE_TRADE') {
-      trades = trades.map(t => t.id===action.id ? {...t,...action.updates} : t);
-      const ticker = trades.find(t=>t.id===action.id)?.ticker||action.id;
-      log.push('✅ Updated '+ticker);
-    } else if (action.type==='ADD_WATCHLIST') {
-      const w = { id:'w-'+Date.now(), ...action.item };
-      watchlist = [w, ...watchlist];
-      log.push('👀 Added '+w.ticker+' to watchlist');
-    } else if (action.type==='UPDATE_WATCHLIST') {
-      watchlist = watchlist.map(w => w.id===action.id ? {...w,...action.updates} : w);
-      log.push('✅ Updated watchlist');
-    } else if (action.type==='REMOVE_WATCHLIST') {
-      const removed = watchlist.find(w=>w.id===action.id);
-      watchlist = watchlist.filter(w=>w.id!==action.id);
-      if (removed) log.push('🗑 Removed '+removed.ticker);
-    }
-  });
-  persist();
-  renderStats();
-  renderWatchlist();
-  renderTradeLog();
-  return log;
-}
-
-async function sendMessage() {
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
-  if (!text || aiLoading) return;
-  input.value = '';
-  input.style.height = 'auto';
-
-  chatHistory.push({ role:'user', content:text, ts:new Date().toISOString() });
-  persistChat();
-  aiLoading = true;
-  renderMessages();
-  document.getElementById('send-btn').disabled = true;
-
-  try {
-    const apiMessages = chatHistory.map(m=>({ role:m.role, content:m.content }));
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model:'claude-sonnet-4-5',
-        max_tokens:1000,
-        system: buildSystemPrompt(),
-        messages: apiMessages,
-      }),
-    });
-    const data = await res.json();
-    
-    // Handle API errors (rate limits, auth issues, etc)
-    if (data.error) {
-      throw new Error('API error: ' + (data.error.message || JSON.stringify(data.error)));
-    }
-
-    const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('') || '{}';
-
-    let parsed;
-    try { 
-      const cleaned = raw.replace(/```json|```/g,'').trim();
-      parsed = JSON.parse(cleaned);
-      // Ensure required fields exist
-      if (!parsed.message) parsed.message = cleaned || 'Done.';
-      if (!parsed.actions) parsed.actions = [];
-    }
-    catch(e) { 
-      // Not JSON - treat entire response as a plain message
-      parsed = { message: raw || 'No response received.', actions:[] }; 
-    }
-
-    let actionLog = [];
-    if (parsed.actions && parsed.actions.length > 0) {
-      actionLog = applyActions(parsed.actions);
-      if (actionLog.length) toast('Dashboard updated ✓');
-    }
-
-    const reply = (parsed.message || 'Done.') + (actionLog.length ? '\n\n'+actionLog.join('\n') : '');
-    chatHistory.push({ role:'assistant', content:reply, ts:new Date().toISOString(), hadAction: actionLog.length>0 });
-    persistChat();
-  } catch(err) {
-    chatHistory.push({ role:'assistant', content:'⚠️ Connection issue — check your internet and try again.', ts:new Date().toISOString() });
-    persistChat();
-  }
-
-  aiLoading = false;
-  document.getElementById('send-btn').disabled = false;
-  renderMessages();
-}
-
-document.getElementById('chat-input').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 120)+'px';
-});
-document.getElementById('chat-input').addEventListener('keydown', function(e) {
-  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-});
-
 renderStats();
-renderChips();
-renderMessages();
 renderRoutine();
 renderRules();
-document.getElementById('ai-tab').style.display = 'flex';
+renderTradeLog();
 function openAddTrade() {
   ['at-ticker','at-contract','at-source','at-entry','at-stop','at-t1','at-cost','at-result','at-notes'].forEach(id=>{
     const el = document.getElementById(id);
